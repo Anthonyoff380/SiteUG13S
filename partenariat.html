@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Partenariats — Urgence 13 Simulations</title>
+  <link rel="icon" href="assets/favicon.ico"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="bubbles-container" aria-hidden="true"></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <img src="assets/logo.png" alt="Logo" class="nav-logo" style="display:none" onerror="this.style.display='none'"/>
+    <div class="nav-logo-placeholder">U13</div>
+    <span class="nav-title">Urgence 13 <span>Simulations</span></span>
+  </a>
+  <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  <ul class="nav-links">
+    <li><a href="index.html">🏠 Accueil</a></li>
+    <li><a href="equipe.html">👥 Équipe</a></li>
+    <li><a href="metiers.html">🚨 Métiers</a></li>
+    <li><a href="partenariat.html" class="active">🤝 Partenariats</a></li>
+    <li><a href="#" id="nav-discord-link" class="nav-discord">Discord</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="hero-badge"><span class="dot"></span>Communauté</div>
+    <h1>Nos <span>Partenaires</span></h1>
+    <p>Découvrez les serveurs et projets avec lesquels nous collaborons.</p>
+  </div>
+
+  <section>
+    <div class="container">
+      <div id="partners-grid" class="grid-4">
+        <div class="empty-state"><div class="icon">⏳</div><p>Chargement des partenaires…</p></div>
+      </div>
+
+      <!-- CTA Partenariat -->
+      <div class="card fade-in" style="text-align:center;padding:3rem 2rem;margin-top:4rem;background:linear-gradient(135deg,rgba(21,101,192,0.1),rgba(13,71,161,0.06))">
+        <div style="font-size:2.5rem;margin-bottom:1rem">🤝</div>
+        <h2 style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem">
+          Devenir Partenaire
+        </h2>
+        <p style="color:var(--text-muted);max-width:460px;margin:0 auto 1.75rem;font-size:0.95rem">
+          Vous gérez un serveur ou un projet FiveM et souhaitez établir un partenariat ? Contactez-nous sur Discord.
+        </p>
+        <a href="#" id="partner-discord-btn" class="btn btn-discord">Nous contacter sur Discord</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <img src="assets/logo.png" id="footer-logo" alt="Logo" class="footer-brand-logo" style="display:none" onerror="this.style.display='none'"/>
+      <div class="footer-brand-name" id="footer-name">Urgence 13 <span>Simulations</span></div>
+      <p class="footer-desc" id="footer-desc">Serveur FiveM de simulation d'urgence réaliste.</p>
+      <div class="footer-socials">
+        <a href="#" id="footer-discord-link" class="footer-social-btn" title="Discord">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="equipe.html">Équipe</a></li><li><a href="metiers.html">Métiers</a></li><li><a href="partenariat.html">Partenariats</a></li></ul></div>
+    <div class="footer-col"><h4>Liens utiles</h4><ul><li><a href="#" id="footer-discord-col">Discord</a></li></ul></div>
+    <div class="footer-col"></div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copyright"><span id="footer-copyright">© 2025 Urgence 13 Simulations. Tous droits réservés.</span> &nbsp;—&nbsp; <span id="footer-dev"></span></div>
+    <div class="footer-bottom-links"><a href="#">Mentions légales</a><a href="#">Règlement</a></div>
+  </div>
+</footer>
+
+<button class="scroll-top">↑</button>
+
+<script type="module">
+import { db, fsOps } from './firebase.js';
+import './app.js';
+
+const { collection, getDocs, getDoc, doc } = fsOps;
+
+async function loadPartners() {
+  try {
+    const snap = await getDocs(collection(db, 'partenaires'));
+    const grid = document.getElementById('partners-grid');
+
+    if (snap.empty) {
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">🤝</div><p>Aucun partenaire pour l\'instant.</p></div>';
+      return;
+    }
+
+    const items = [];
+    snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+    items.sort((a, b) => (a.ordre || 99) - (b.ordre || 99));
+
+    grid.innerHTML = '';
+    items.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'card partner-card fade-in';
+      el.innerHTML = `
+        ${p.logoUrl
+          ? `<img src="${p.logoUrl}" alt="${p.nom}" class="partner-logo"/>`
+          : `<div class="partner-logo-placeholder">🤝</div>`
+        }
+        <div class="partner-name">${p.nom || 'Partenaire'}</div>
+        ${p.description ? `<p class="feature-text" style="margin-bottom:0.75rem">${p.description}</p>` : ''}
+        ${p.discordUrl
+          ? `<a href="${p.discordUrl}" target="_blank" rel="noopener" class="btn btn-discord btn-sm">Discord</a>`
+          : ''
+        }
+      `;
+      grid.appendChild(el);
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    grid.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById('partners-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">⚠️</div><p>Erreur lors du chargement.</p></div>';
+  }
+}
+
+async function loadDiscord() {
+  try {
+    const snap = await getDoc(doc(db, 'config', 'site'));
+    const url = snap.exists() ? snap.data().discordUrl || '#' : '#';
+    ['nav-discord-link','footer-discord-link','footer-discord-col','partner-discord-btn'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.href = url;
+    });
+  } catch(e) {}
+}
+
+loadPartners();
+loadDiscord();
+</script>
+</body>
+</html>
