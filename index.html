@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UG13S — Urgence 13 Simulations</title>
+  <meta name="description" content="Bienvenue sur UG13S — votre serveur de simulations, une communauté soudée et ambitieuse." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:ital,wght@0,200;0,400;0,600;1,200&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+    // ⬇ REMPLACEZ ces valeurs par votre config Firebase
+   const firebaseConfig = {
+    apiKey: "AIzaSyDAcd1Gsbrks6TRum6mEhoGAY2xBaNwxIM",
+    authDomain: "siteug13s.firebaseapp.com",
+    projectId: "siteug13s",
+    storageBucket: "siteug13s.firebasestorage.app",
+    messagingSenderId: "122631194173",
+    appId: "1:122631194173:web:dff794d0c2c5fc31a04c54",
+    measurementId: "G-G8V3N5BH7X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    window.__firebaseApp = app;
+    window.__db = getFirestore(app);
+    window.__auth = getAuth(app);
+    window.__storage = getStorage(app);
+    window.dispatchEvent(new Event("firebase-ready"));
+  </script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════ CURSOR ═══════════════ -->
+  <div id="cursor"></div>
+  <div id="cursor-trail"></div>
+
+  <!-- ═══════════════ BACKGROUND ═══════════════ -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="bg-grid"></div>
+
+  <!-- ═══════════════ NAVBAR ═══════════════ -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo">
+        <span class="logo-bracket">[</span>UG<span class="logo-accent">13S</span><span class="logo-bracket">]</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#home" class="nav-link active" data-section="home">Accueil</a></li>
+        <li><a href="#game-info" class="nav-link" data-section="game-info">Le Jeu</a></li>
+        <li><a href="#team" class="nav-link" data-section="team">Équipe</a></li>
+        <li><a href="#gallery" class="nav-link" data-section="gallery">Galerie</a></li>
+        <li><a href="#social" class="nav-link" data-section="social">Réseaux</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <!-- Mini bouton portail connexion -->
+        <a href="admin/login.html" class="btn-portal" title="Portail Admin / Recruteur">
+          <i class="fa fa-shield-halved"></i>
+          <span>Portail</span>
+        </a>
+        <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="#home" class="mobile-link">Accueil</a>
+      <a href="#game-info" class="mobile-link">Le Jeu</a>
+      <a href="#team" class="mobile-link">Équipe</a>
+      <a href="#gallery" class="mobile-link">Galerie</a>
+      <a href="#social" class="mobile-link">Réseaux</a>
+      <a href="admin/login.html" class="mobile-link portal-mobile">⚙ Portail Admin</a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section id="home" class="hero">
+    <div class="hero-content">
+      <div class="hero-tag"><span class="dot"></span> SIMULATION GAMING</div>
+      <h1 class="hero-title">
+        <span class="line-1">UNIVERS</span>
+        <span class="line-2">GAMING <em>13S</em></span>
+      </h1>
+      <p class="hero-sub">Une communauté. Un univers. Des règles. <br/>Rejoignez l'expérience UG13S.</p>
+      <div class="hero-actions">
+        <a href="#game-info" class="btn-primary">Découvrir le jeu</a>
+        <a href="#team" class="btn-ghost">Voir l'équipe</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hex-ring">
+        <div class="hex"></div>
+        <div class="hex"></div>
+        <div class="hex"></div>
+      </div>
+      <div class="hero-logo-3d">UG13S</div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>SCROLL</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ STATS BAR ═══════════════ -->
+  <section class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <span class="stat-num" data-target="0" id="stat-members">0</span>
+        <span class="stat-label">Membres</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num" data-target="0" id="stat-posts">0</span>
+        <span class="stat-label">Publications</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num" data-target="0" id="stat-days">0</span>
+        <span class="stat-label">Jours actifs</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ GAME INFO ═══════════════ -->
+  <section id="game-info" class="section game-info-section">
+    <div class="section-header">
+      <span class="section-tag">// 01</span>
+      <h2 class="section-title">Le <em>Jeu</em></h2>
+      <p class="section-sub">Tout ce que vous devez savoir sur notre univers de simulation</p>
+    </div>
+
+    <div class="game-info-grid" id="game-info-grid">
+      <!-- Contenu chargé depuis Firebase -->
+      <div class="info-card placeholder">
+        <div class="info-icon"><i class="fa fa-gamepad"></i></div>
+        <h3>Chargement...</h3>
+        <p>Les informations du jeu sont en cours de chargement.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ TEAM ═══════════════ -->
+  <section id="team" class="section team-section">
+    <div class="section-header">
+      <span class="section-tag">// 02</span>
+      <h2 class="section-title">Équipe <em>UG13S</em></h2>
+      <p class="section-sub">Rencontrez les piliers de la communauté</p>
+    </div>
+
+    <div class="team-grid" id="team-grid">
+      <!-- Cards chargées depuis Firebase -->
+      <div class="team-placeholder">
+        <div class="spinner"></div>
+        <p>Chargement de l'équipe...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ GALLERY ═══════════════ -->
+  <section id="gallery" class="section gallery-section">
+    <div class="section-header">
+      <span class="section-tag">// 03</span>
+      <h2 class="section-title">Galerie <em>Photos</em></h2>
+      <p class="section-sub">Les meilleurs moments de notre univers</p>
+    </div>
+
+    <div class="gallery-grid" id="gallery-grid">
+      <div class="gallery-loading">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SOCIAL ═══════════════ -->
+  <section id="social" class="section social-section">
+    <div class="section-header">
+      <span class="section-tag">// 04</span>
+      <h2 class="section-title">Nos <em>Réseaux</em></h2>
+      <p class="section-sub">Suivez-nous et rejoignez la communauté</p>
+    </div>
+
+    <div class="social-grid" id="social-grid">
+      <!-- Chargé depuis Firebase -->
+      <div class="spinner"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-bracket">[</span>UG<span class="logo-accent">13S</span><span class="logo-bracket">]</span>
+      </div>
+      <p class="footer-copy">© 2025 UG13S — Univers Gaming 13S. Tous droits réservés.</p>
+      <a href="admin/login.html" class="footer-admin-btn" title="Portail Admin">
+        <i class="fa fa-lock"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- ═══════════════ NOTIFICATION TOAST ═══════════════ -->
+  <div id="toast" class="toast"></div>
+
+  <script src="js/main.js" type="module"></script>
+</body>
+</html>
