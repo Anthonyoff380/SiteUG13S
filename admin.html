@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Administration — Urgence 13 Simulations</title>
+  <link rel="icon" href="assets/favicon.ico"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* Extra admin styles */
+    .admin-header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+    }
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .admin-brand-badge {
+      background: rgba(198,40,40,0.2);
+      border: 1px solid rgba(198,40,40,0.3);
+      color: var(--red-light);
+      font-family: var(--font-head);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+    .admin-user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .stat-card-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .stat-card-value {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--blue-glow);
+      line-height: 1;
+    }
+    .stat-card-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .tag-input-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.5rem;
+      min-height: 48px;
+      align-items: center;
+      cursor: text;
+    }
+    .tag-input-wrap input {
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      flex: 1;
+      min-width: 120px;
+      padding: 2px 4px;
+    }
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(21,101,192,0.2);
+      border: 1px solid rgba(30,136,229,0.3);
+      color: var(--blue-glow);
+      font-size: 0.78rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .tag-chip button {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1;
+      padding: 0;
+      opacity: 0.6;
+    }
+    .tag-chip button:hover { opacity: 1; }
+    @media (max-width: 768px) {
+      .form-row { grid-template-columns: 1fr; }
+      .admin-sidebar { display: none; }
+      .admin-sidebar.open { display: block; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bubbles-container" aria-hidden="true" style="opacity:0.4"></div>
+
+<!-- LOGIN PAGE -->
+<div id="login-page">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">
+        <div class="nav-logo-placeholder" style="width:60px;height:60px;font-size:1.6rem;margin:0 auto 0.5rem">U13</div>
+      </div>
+      <div class="login-title">Administration</div>
+      <div class="login-sub">Urgence 13 Simulations — Accès restreint</div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" id="login-email" class="form-control" placeholder="admin@u13.fr"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" id="login-password" class="form-control" placeholder="••••••••"/>
+      </div>
+      <div id="login-error" style="color:var(--red-light);font-size:0.85rem;margin-bottom:1rem;display:none"></div>
+      <button class="btn btn-primary" style="width:100%" id="login-btn">Se connecter</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div id="admin-page" style="display:none">
+
+  <!-- Top bar -->
+  <header class="admin-header">
+    <div class="admin-brand">
+      <a href="index.html" style="color:var(--text-muted);text-decoration:none;font-size:0.85rem">← Site</a>
+      <span style="color:var(--border)">|</span>
+      <span style="font-family:var(--font-head);font-weight:700;letter-spacing:1px">Urgence 13</span>
+      <span class="admin-brand-badge">Admin</span>
+    </div>
+    <div class="admin-user-info">
+      <span id="admin-email-display"></span>
+      <button class="btn btn-outline btn-sm" id="logout-btn">Déconnexion</button>
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-title">Général</div>
+      <button class="admin-nav-item active" data-section="dashboard">📊 Tableau de bord</button>
+      <button class="admin-nav-item" data-section="site-config">⚙️ Config. du site</button>
+
+      <div class="admin-sidebar-title">Contenu</div>
+      <button class="admin-nav-item" data-section="team">👥 Équipe</button>
+      <button class="admin-nav-item" data-section="metiers">🚨 Métiers</button>
+      <button class="admin-nav-item" data-section="partenaires">🤝 Partenaires</button>
+
+      <div class="admin-sidebar-title">Apparence</div>
+      <button class="admin-nav-item" data-section="footer-config">📝 Footer</button>
+    </aside>
+
+    <!-- Main content -->
+    <main class="admin-content">
+
+      <!-- DASHBOARD -->
+      <section class="admin-section active" id="section-dashboard">
+        <div class="admin-section-title">📊 Tableau de bord</div>
+        <div class="stat-cards">
+          <div class="stat-card"><div class="stat-card-icon">👥</div><div><div class="stat-card-value" id="dash-team">—</div><div class="stat-card-label">Membres équipe</div></div></div>
+          <div class="stat-card"><div class="stat-card-icon">🚨</div><div><div class="stat-card-value" id="dash-metiers">—</div><div class="stat-card-label">Métiers</div></div></div>
+          <div class="stat-card"><div class="stat-card-icon">🤝</div><div><div class="stat-card-value" id="dash-partners">—</div><div class="stat-card-label">Partenaires</div></div></div>
+        </div>
+        <div class="card" style="margin-top:1rem">
+          <h3 style="font-family:var(--font-head);font-weight:700;letter-spacing:1px;margin-bottom:0.5rem">Bienvenue dans le panel admin</h3>
+          <p style="color:var(--text-muted);font-size:0.9rem">Utilisez le menu de gauche pour gérer le contenu de votre site Urgence 13 Simulations. Toutes les modifications sont sauvegardées en temps réel sur Firebase.</p>
+        </div>
+      </section>
+
+      <!-- SITE CONFIG -->
+      <section class="admin-section" id="section-site-config">
+        <div class="admin-section-title">⚙️ Configuration du site</div>
+        <div class="card">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nom du site</label>
+              <input type="text" id="cfg-siteName" class="form-control" placeholder="Urgence 13 Simulations"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lien Discord</label>
+              <input type="url" id="cfg-discordUrl" class="form-control" placeholder="https://discord.gg/..."/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description / Sous-titre hero</label>
+            <textarea id="cfg-heroSubtitle" class="form-control" rows="2" placeholder="Description affichée sous le titre sur la page d'accueil"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Logo du site (URL ou upload)</label>
+            <div class="img-upload-area" id="logo-upload-area">
+              <input type="file" id="cfg-logo-file" accept="image/*"/>
+              <div id="logo-preview-wrap">
+                <div style="font-size:2rem;margin-bottom:0.5rem">🖼️</div>
+                <p style="font-size:0.85rem;color:var(--text-muted)">Cliquez pour uploader un logo</p>
+              </div>
+              <img id="cfg-logo-preview" class="img-preview-sq" style="display:none;border-radius:8px"/>
+            </div>
+            <input type="url" id="cfg-logo-url" class="form-control" style="margin-top:0.5rem" placeholder="ou collez une URL d'image..."/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Stat : Membres</label>
+              <input type="text" id="cfg-statMembers" class="form-control" placeholder="Ex: 200+"/>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="save-site-config">Sauvegarder la config</button>
+        </div>
+      </section>
+
+      <!-- TEAM -->
+      <section class="admin-section" id="section-team">
+        <div class="admin-section-title">👥 Gestion de l'équipe</div>
+        <button class="btn btn-primary" id="add-team-btn" style="margin-bottom:1.5rem">+ Ajouter un membre</button>
+        <div id="team-list"></div>
+      </section>
+
+      <!-- METIERS -->
+      <section class="admin-section" id="section-metiers">
+        <div class="admin-section-title">🚨 Gestion des métiers</div>
+        <button class="btn btn-primary" id="add-metier-btn" style="margin-bottom:1.5rem">+ Ajouter un métier</button>
+        <div id="metiers-list"></div>
+      </section>
+
+      <!-- PARTENAIRES -->
+      <section class="admin-section" id="section-partenaires">
+        <div class="admin-section-title">🤝 Gestion des partenaires</div>
+        <button class="btn btn-primary" id="add-partner-btn" style="margin-bottom:1.5rem">+ Ajouter un partenaire</button>
+        <div id="partners-list"></div>
+      </section>
+
+      <!-- FOOTER CONFIG -->
+      <section class="admin-section" id="section-footer-config">
+        <div class="admin-section-title">📝 Configuration du footer</div>
+        <div class="card">
+          <div class="form-group">
+            <label class="form-label">Texte copyright</label>
+            <input type="text" id="cfg-copyright" class="form-control" placeholder="© 2025 Urgence 13 Simulations. Tous droits réservés."/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nom du développeur</label>
+              <input type="text" id="cfg-developer" class="form-control" placeholder="VotrePseudo"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">URL profil développeur</label>
+              <input type="url" id="cfg-developerUrl" class="form-control" placeholder="https://..."/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description footer</label>
+            <textarea id="cfg-footerDesc" class="form-control" rows="2" placeholder="Description courte affichée dans le footer"></textarea>
+          </div>
+          <button class="btn btn-primary" id="save-footer-config">Sauvegarder le footer</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ======== MODAL MEMBRE ======== -->
+<div class="modal-overlay" id="team-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="team-modal-title">Ajouter un membre</div>
+      <button class="modal-close" id="team-modal-close">✕</button>
+    </div>
+    <input type="hidden" id="team-edit-id"/>
+    <div class="form-group">
+      <label class="form-label">Photo de profil</label>
+      <div class="img-upload-area">
+        <input type="file" id="team-avatar-file" accept="image/*"/>
+        <div id="team-avatar-preview-wrap">
+          <div style="font-size:2rem">👤</div>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-top:0.3rem">Uploader une photo</p>
+        </div>
+        <img id="team-avatar-preview" class="img-preview" style="display:none"/>
+      </div>
+      <input type="url" id="team-avatar-url" class="form-control" style="margin-top:0.5rem" placeholder="ou URL de l'image..."/>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Prénom</label>
+        <input type="text" id="team-prenom" class="form-control" placeholder="Jean"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nom</label>
+        <input type="text" id="team-nom" class="form-control" placeholder="Dupont"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Rôle / Poste</label>
+      <input type="text" id="team-role" class="form-control" placeholder="Directeur, Modérateur, Développeur..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description <span style="opacity:0.5">(optionnel)</span></label>
+      <textarea id="team-description" class="form-control" rows="3" placeholder="Courte description du membre..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Ordre d'affichage</label>
+      <input type="number" id="team-ordre" class="form-control" placeholder="1" min="1"/>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button class="btn btn-primary" id="team-save-btn" style="flex:1">Sauvegarder</button>
+      <button class="btn btn-outline" id="team-cancel-btn">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======== MODAL MÉTIER ======== -->
+<div class="modal-overlay" id="metier-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="metier-modal-title">Ajouter un métier</div>
+      <button class="modal-close" id="metier-modal-close">✕</button>
+    </div>
+    <input type="hidden" id="metier-edit-id"/>
+    <div class="form-group">
+      <label class="form-label">Image du métier</label>
+      <div class="img-upload-area">
+        <input type="file" id="metier-img-file" accept="image/*"/>
+        <div id="metier-img-preview-wrap">
+          <div style="font-size:2rem">🖼️</div>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-top:0.3rem">Uploader une image</p>
+        </div>
+        <img id="metier-img-preview" class="img-preview-sq" style="display:none;width:120px;height:70px;object-fit:cover"/>
+      </div>
+      <input type="url" id="metier-img-url" class="form-control" style="margin-top:0.5rem" placeholder="ou URL de l'image..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nom du métier</label>
+      <input type="text" id="metier-nom" class="form-control" placeholder="Police Nationale, SDIS, SAMU..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description <span style="opacity:0.5">(optionnel)</span></label>
+      <textarea id="metier-description" class="form-control" rows="2" placeholder="Description du corps de métier..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cadres de service (tags)</label>
+      <div class="tag-input-wrap" id="services-tags">
+        <input type="text" id="services-input" placeholder="Tapez et appuyez Entrée…"/>
+      </div>
+      <input type="hidden" id="metier-services-json"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Lien Discord du métier</label>
+      <input type="url" id="metier-discord" class="form-control" placeholder="https://discord.gg/..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Ordre d'affichage</label>
+      <input type="number" id="metier-ordre" class="form-control" placeholder="1" min="1"/>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button class="btn btn-primary" id="metier-save-btn" style="flex:1">Sauvegarder</button>
+      <button class="btn btn-outline" id="metier-cancel-btn">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======== MODAL PARTENAIRE ======== -->
+<div class="modal-overlay" id="partner-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="partner-modal-title">Ajouter un partenaire</div>
+      <button class="modal-close" id="partner-modal-close">✕</button>
+    </div>
+    <input type="hidden" id="partner-edit-id"/>
+    <div class="form-group">
+      <label class="form-label">Logo du partenaire</label>
+      <div class="img-upload-area">
+        <input type="file" id="partner-logo-file" accept="image/*"/>
+        <div id="partner-logo-preview-wrap">
+          <div style="font-size:2rem">🤝</div>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-top:0.3rem">Uploader un logo</p>
+        </div>
+        <img id="partner-logo-preview" class="img-preview-sq" style="display:none"/>
+      </div>
+      <input type="url" id="partner-logo-url" class="form-control" style="margin-top:0.5rem" placeholder="ou URL du logo..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nom du partenaire</label>
+      <input type="text" id="partner-nom" class="form-control" placeholder="Nom du serveur / projet"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description <span style="opacity:0.5">(optionnel)</span></label>
+      <textarea id="partner-description" class="form-control" rows="2" placeholder="Courte description..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Lien Discord</label>
+      <input type="url" id="partner-discord" class="form-control" placeholder="https://discord.gg/..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Ordre d'affichage</label>
+      <input type="number" id="partner-ordre" class="form-control" placeholder="1" min="1"/>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button class="btn btn-primary" id="partner-save-btn" style="flex:1">Sauvegarder</button>
+      <button class="btn btn-outline" id="partner-cancel-btn">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { db, auth, storage, fsOps } from './firebase.js';
+import './app.js';
+
+const {
+  collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
+  onAuthStateChanged, signInWithEmailAndPassword, signOut,
+  ref, uploadBytes, getDownloadURL
+} = fsOps;
+
+// ── AUTH ──
+const loginPage = document.getElementById('login-page');
+const adminPage = document.getElementById('admin-page');
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    loginPage.style.display = 'none';
+    adminPage.style.display = 'block';
+    document.getElementById('admin-email-display').textContent = user.email;
+    initAdmin();
+  } else {
+    loginPage.style.display = 'block';
+    adminPage.style.display = 'none';
+  }
+});
+
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const email = document.getElementById('login-email').value;
+  const pass  = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    errEl.textContent = 'Email ou mot de passe incorrect.';
+    errEl.style.display = 'block';
+  }
+});
+
+document.getElementById('login-password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('login-btn').click();
+});
+
+document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
+// ── SIDEBAR NAVIGATION ──
+document.querySelectorAll('.admin-nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('section-' + btn.dataset.section).classList.add('active');
+  });
+});
+
+// ── UPLOAD HELPER ──
+async function uploadFile(file, path) {
+  const storageRef = ref(storage, path);
+  await uploadBytes(storageRef, file);
+  return await getDownloadURL(storageRef);
+}
+
+// ── FILE PREVIEW HELPER ──
+function bindFilePreview(inputId, previewId, wrapId) {
+  document.getElementById(inputId).addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const preview = document.getElementById(previewId);
+    const wrap    = document.getElementById(wrapId);
+    const reader  = new FileReader();
+    reader.onload  = ev => {
+      preview.src = ev.target.result;
+      preview.style.display = 'block';
+      wrap.style.display    = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── TAG INPUT ──
+let serviceTags = [];
+
+function renderTags() {
+  const container = document.getElementById('services-tags');
+  const input     = document.getElementById('services-input');
+  container.querySelectorAll('.tag-chip').forEach(el => el.remove());
+  serviceTags.forEach((tag, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${tag}<button type="button" data-i="${i}">✕</button>`;
+    chip.querySelector('button').addEventListener('click', () => {
+      serviceTags.splice(i, 1);
+      renderTags();
+    });
+    container.insertBefore(chip, input);
+  });
+  document.getElementById('metier-services-json').value = JSON.stringify(serviceTags);
+}
+
+document.getElementById('services-input').addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ',') && e.target.value.trim()) {
+    e.preventDefault();
+    serviceTags.push(e.target.value.trim());
+    e.target.value = '';
+    renderTags();
+  }
+});
+
+// ── MODAL HELPERS ──
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+['team-modal','metier-modal','partner-modal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => {
+    if (e.target === document.getElementById(id)) closeModal(id);
+  });
+});
+
+['team-modal-close','team-cancel-btn'].forEach(id => document.getElementById(id).addEventListener('click', () => closeModal('team-modal')));
+['metier-modal-close','metier-cancel-btn'].forEach(id => document.getElementById(id).addEventListener('click', () => closeModal('metier-modal')));
+['partner-modal-close','partner-cancel-btn'].forEach(id => document.getElementById(id).addEventListener('click', () => closeModal('partner-modal')));
+
+// ════════════════════════════════════════
+//  INIT ADMIN
+// ════════════════════════════════════════
+async function initAdmin() {
+  bindFilePreview('cfg-logo-file', 'cfg-logo-preview', 'logo-preview-wrap');
+  bindFilePreview('team-avatar-file', 'team-avatar-preview', 'team-avatar-preview-wrap');
+  bindFilePreview('metier-img-file', 'metier-img-preview', 'metier-img-preview-wrap');
+  bindFilePreview('partner-logo-file', 'partner-logo-preview', 'partner-logo-preview-wrap');
+
+  loadDashboard();
+  loadSiteConfig();
+  loadTeamList();
+  loadMetiersList();
+  loadPartnersList();
+  setupSiteConfigSave();
+  setupFooterConfigSave();
+  setupTeamModal();
+  setupMetierModal();
+  setupPartnerModal();
+  loadFooterConfig();
+}
+
+// ── DASHBOARD ──
+async function loadDashboard() {
+  try {
+    const [teamSnap, metSnap, parSnap] = await Promise.all([
+      getDocs(collection(db, 'team')),
+      getDocs(collection(db, 'metiers')),
+      getDocs(collection(db, 'partenaires'))
+    ]);
+    document.getElementById('dash-team').textContent     = teamSnap.size;
+    document.getElementById('dash-metiers').textContent  = metSnap.size;
+    document.getElementById('dash-partners').textContent = parSnap.size;
+  } catch(e) {}
+}
+
+// ── SITE CONFIG ──
+async function loadSiteConfig() {
+  try {
+    const snap = await getDoc(doc(db, 'config', 'site'));
+    if (!snap.exists()) return;
+    const d = snap.data();
+    document.getElementById('cfg-siteName').value    = d.siteName    || '';
+    document.getElementById('cfg-discordUrl').value  = d.discordUrl  || '';
+    document.getElementById('cfg-heroSubtitle').value= d.heroSubtitle|| '';
+    document.getElementById('cfg-logo-url').value    = d.logo        || '';
+    document.getElementById('cfg-statMembers').value = d.statMembers || '';
+    if (d.logo) {
+      const preview = document.getElementById('cfg-logo-preview');
+      preview.src = d.logo;
+      preview.style.display = 'block';
+      document.getElementById('logo-preview-wrap').style.display = 'none';
+    }
+  } catch(e) {}
+}
+
+function setupSiteConfigSave() {
+  document.getElementById('save-site-config').addEventListener('click', async () => {
+    try {
+      let logoUrl = document.getElementById('cfg-logo-url').value;
+      const file  = document.getElementById('cfg-logo-file').files[0];
+      if (file) logoUrl = await uploadFile(file, `site/logo_${Date.now()}_${file.name}`);
+
+      await setDoc(doc(db, 'config', 'site'), {
+        siteName:     document.getElementById('cfg-siteName').value,
+        discordUrl:   document.getElementById('cfg-discordUrl').value,
+        heroSubtitle: document.getElementById('cfg-heroSubtitle').value,
+        logo:         logoUrl,
+        statMembers:  document.getElementById('cfg-statMembers').value,
+      }, { merge: true });
+
+      showToast('Configuration sauvegardée !', 'success');
+    } catch(e) {
+      console.error(e);
+      showToast('Erreur lors de la sauvegarde.', 'error');
+    }
+  });
+}
+
+// ── FOOTER CONFIG ──
+async function loadFooterConfig() {
+  try {
+    const snap = await getDoc(doc(db, 'config', 'site'));
+    if (!snap.exists()) return;
+    const d = snap.data();
+    document.getElementById('cfg-copyright').value   = d.copyright   || '';
+    document.getElementById('cfg-developer').value   = d.developer   || '';
+    document.getElementById('cfg-developerUrl').value= d.developerUrl|| '';
+    document.getElementById('cfg-footerDesc').value  = d.description || '';
+  } catch(e) {}
+}
+
+function setupFooterConfigSave() {
+  document.getElementById('save-footer-config').addEventListener('click', async () => {
+    try {
+      await setDoc(doc(db, 'config', 'site'), {
+        copyright:    document.getElementById('cfg-copyright').value,
+        developer:    document.getElementById('cfg-developer').value,
+        developerUrl: document.getElementById('cfg-developerUrl').value,
+        description:  document.getElementById('cfg-footerDesc').value,
+      }, { merge: true });
+      showToast('Footer sauvegardé !', 'success');
+    } catch(e) {
+      showToast('Erreur lors de la sauvegarde.', 'error');
+    }
+  });
+}
+
+// ════════════════════════════════════════
+//  TEAM
+// ════════════════════════════════════════
+async function loadTeamList() {
+  try {
+    const snap = await getDocs(collection(db, 'team'));
+    const list = document.getElementById('team-list');
+    if (snap.empty) { list.innerHTML = '<p style="color:var(--text-muted)">Aucun membre. Ajoutez-en un !</p>'; return; }
+    const members = [];
+    snap.forEach(d => members.push({ id: d.id, ...d.data() }));
+    members.sort((a,b) => (a.ordre||99)-(b.ordre||99));
+    list.innerHTML = '';
+    members.forEach(m => {
+      const el = document.createElement('div');
+      el.className = 'admin-item';
+      el.innerHTML = `
+        ${m.avatarUrl
+          ? `<img src="${m.avatarUrl}" class="admin-item-thumb" alt=""/>`
+          : `<div class="admin-item-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--bg-panel);font-size:1.4rem">${(m.prenom||'?')[0]}${(m.nom||'?')[0]}</div>`
+        }
+        <div class="admin-item-info">
+          <div class="admin-item-name">${m.prenom||''} ${m.nom||''}</div>
+          <div class="admin-item-sub">${m.role||'—'}</div>
+        </div>
+        <div class="admin-item-actions">
+          <button class="btn btn-outline btn-sm" data-edit="${m.id}">✏️ Modifier</button>
+          <button class="btn btn-danger btn-sm" data-delete="${m.id}">🗑️</button>
+        </div>
+      `;
+      el.querySelector('[data-edit]').addEventListener('click', () => openTeamModal(m));
+      el.querySelector('[data-delete]').addEventListener('click', async () => {
+        if (!confirm(`Supprimer ${m.prenom} ${m.nom} ?`)) return;
+        await deleteDoc(doc(db, 'team', m.id));
+        showToast('Membre supprimé.', 'success');
+        loadTeamList();
+        loadDashboard();
+      });
+      list.appendChild(el);
+    });
+  } catch(e) { console.error(e); }
+}
+
+function openTeamModal(member = null) {
+  document.getElementById('team-modal-title').textContent = member ? 'Modifier un membre' : 'Ajouter un membre';
+  document.getElementById('team-edit-id').value      = member?.id || '';
+  document.getElementById('team-prenom').value       = member?.prenom || '';
+  document.getElementById('team-nom').value          = member?.nom || '';
+  document.getElementById('team-role').value         = member?.role || '';
+  document.getElementById('team-description').value  = member?.description || '';
+  document.getElementById('team-ordre').value        = member?.ordre || '';
+  document.getElementById('team-avatar-url').value   = member?.avatarUrl || '';
+
+  const preview = document.getElementById('team-avatar-preview');
+  const wrap    = document.getElementById('team-avatar-preview-wrap');
+  if (member?.avatarUrl) { preview.src = member.avatarUrl; preview.style.display = 'block'; wrap.style.display = 'none'; }
+  else { preview.style.display = 'none'; wrap.style.display = 'block'; }
+
+  document.getElementById('team-avatar-file').value = '';
+  openModal('team-modal');
+}
+
+function setupTeamModal() {
+  document.getElementById('add-team-btn').addEventListener('click', () => openTeamModal());
+
+  document.getElementById('team-save-btn').addEventListener('click', async () => {
+    const id     = document.getElementById('team-edit-id').value;
+    const prenom = document.getElementById('team-prenom').value.trim();
+    const nom    = document.getElementById('team-nom').value.trim();
+    if (!prenom && !nom) { showToast('Prénom ou nom requis.', 'error'); return; }
+
+    try {
+      let avatarUrl = document.getElementById('team-avatar-url').value;
+      const file    = document.getElementById('team-avatar-file').files[0];
+      if (file) avatarUrl = await uploadFile(file, `team/${Date.now()}_${file.name}`);
+
+      const data = {
+        prenom, nom,
+        role:        document.getElementById('team-role').value,
+        description: document.getElementById('team-description').value,
+        ordre:       parseInt(document.getElementById('team-ordre').value) || 99,
+        avatarUrl,
+        updatedAt:   Date.now()
+      };
+
+      if (id) await updateDoc(doc(db, 'team', id), data);
+      else    await addDoc(collection(db, 'team'), { ...data, createdAt: Date.now() });
+
+      closeModal('team-modal');
+      showToast('Membre sauvegardé !', 'success');
+      loadTeamList();
+      loadDashboard();
+    } catch(e) {
+      console.error(e);
+      showToast('Erreur lors de la sauvegarde.', 'error');
+    }
+  });
+}
+
+// ════════════════════════════════════════
+//  METIERS
+// ════════════════════════════════════════
+async function loadMetiersList() {
+  try {
+    const snap = await getDocs(collection(db, 'metiers'));
+    const list = document.getElementById('metiers-list');
+    if (snap.empty) { list.innerHTML = '<p style="color:var(--text-muted)">Aucun métier. Ajoutez-en un !</p>'; return; }
+    const items = [];
+    snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+    items.sort((a,b) => (a.ordre||99)-(b.ordre||99));
+    list.innerHTML = '';
+    items.forEach(m => {
+      const services = Array.isArray(m.services) ? m.services.join(', ') : (m.services || '—');
+      const el = document.createElement('div');
+      el.className = 'admin-item';
+      el.innerHTML = `
+        <div class="admin-item-thumb-sq">
+          ${m.imageUrl ? `<img src="${m.imageUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius)"/>` : '🚒'}
+        </div>
+        <div class="admin-item-info">
+          <div class="admin-item-name">${m.nom || '—'}</div>
+          <div class="admin-item-sub">${services}</div>
+        </div>
+        <div class="admin-item-actions">
+          <button class="btn btn-outline btn-sm" data-edit="${m.id}">✏️ Modifier</button>
+          <button class="btn btn-danger btn-sm" data-delete="${m.id}">🗑️</button>
+        </div>
+      `;
+      el.querySelector('[data-edit]').addEventListener('click', () => openMetierModal(m));
+      el.querySelector('[data-delete]').addEventListener('click', async () => {
+        if (!confirm(`Supprimer le métier "${m.nom}" ?`)) return;
+        await deleteDoc(doc(db, 'metiers', m.id));
+        showToast('Métier supprimé.', 'success');
+        loadMetiersList();
+        loadDashboard();
+      });
+      list.appendChild(el);
+    });
+  } catch(e) { console.error(e); }
+}
+
+function openMetierModal(metier = null) {
+  document.getElementById('metier-modal-title').textContent = metier ? 'Modifier un métier' : 'Ajouter un métier';
+  document.getElementById('metier-edit-id').value      = metier?.id || '';
+  document.getElementById('metier-nom').value          = metier?.nom || '';
+  document.getElementById('metier-description').value  = metier?.description || '';
+  document.getElementById('metier-discord').value      = metier?.discordUrl || '';
+  document.getElementById('metier-ordre').value        = metier?.ordre || '';
+  document.getElementById('metier-img-url').value      = metier?.imageUrl || '';
+  document.getElementById('metier-img-file').value     = '';
+
+  serviceTags = Array.isArray(metier?.services) ? [...metier.services] : [];
+  renderTags();
+
+  const preview = document.getElementById('metier-img-preview');
+  const wrap    = document.getElementById('metier-img-preview-wrap');
+  if (metier?.imageUrl) { preview.src = metier.imageUrl; preview.style.display = 'block'; wrap.style.display = 'none'; }
+  else { preview.style.display = 'none'; wrap.style.display = 'block'; }
+
+  openModal('metier-modal');
+}
+
+function setupMetierModal() {
+  document.getElementById('add-metier-btn').addEventListener('click', () => openMetierModal());
+
+  document.getElementById('metier-save-btn').addEventListener('click', async () => {
+    const id  = document.getElementById('metier-edit-id').value;
+    const nom = document.getElementById('metier-nom').value.trim();
+    if (!nom) { showToast('Nom du métier requis.', 'error'); return; }
+
+    try {
+      let imageUrl = document.getElementById('metier-img-url').value;
+      const file   = document.getElementById('metier-img-file').files[0];
+      if (file) imageUrl = await uploadFile(file, `metiers/${Date.now()}_${file.name}`);
+
+      const data = {
+        nom,
+        description: document.getElementById('metier-description').value,
+        services:    serviceTags,
+        discordUrl:  document.getElementById('metier-discord').value,
+        ordre:       parseInt(document.getElementById('metier-ordre').value) || 99,
+        imageUrl,
+        updatedAt:   Date.now()
+      };
+
+      if (id) await updateDoc(doc(db, 'metiers', id), data);
+      else    await addDoc(collection(db, 'metiers'), { ...data, createdAt: Date.now() });
+
+      closeModal('metier-modal');
+      showToast('Métier sauvegardé !', 'success');
+      loadMetiersList();
+      loadDashboard();
+    } catch(e) {
+      console.error(e);
+      showToast('Erreur lors de la sauvegarde.', 'error');
+    }
+  });
+}
+
+// ════════════════════════════════════════
+//  PARTENAIRES
+// ════════════════════════════════════════
+async function loadPartnersList() {
+  try {
+    const snap = await getDocs(collection(db, 'partenaires'));
+    const list = document.getElementById('partners-list');
+    if (snap.empty) { list.innerHTML = '<p style="color:var(--text-muted)">Aucun partenaire. Ajoutez-en un !</p>'; return; }
+    const items = [];
+    snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+    items.sort((a,b) => (a.ordre||99)-(b.ordre||99));
+    list.innerHTML = '';
+    items.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'admin-item';
+      el.innerHTML = `
+        <div class="admin-item-thumb-sq">
+          ${p.logoUrl ? `<img src="${p.logoUrl}" style="width:100%;height:100%;object-fit:contain;border-radius:var(--radius)"/>` : '🤝'}
+        </div>
+        <div class="admin-item-info">
+          <div class="admin-item-name">${p.nom || '—'}</div>
+          <div class="admin-item-sub">${p.discordUrl || '—'}</div>
+        </div>
+        <div class="admin-item-actions">
+          <button class="btn btn-outline btn-sm" data-edit="${p.id}">✏️ Modifier</button>
+          <button class="btn btn-danger btn-sm" data-delete="${p.id}">🗑️</button>
+        </div>
+      `;
+      el.querySelector('[data-edit]').addEventListener('click', () => openPartnerModal(p));
+      el.querySelector('[data-delete]').addEventListener('click', async () => {
+        if (!confirm(`Supprimer le partenaire "${p.nom}" ?`)) return;
+        await deleteDoc(doc(db, 'partenaires', p.id));
+        showToast('Partenaire supprimé.', 'success');
+        loadPartnersList();
+        loadDashboard();
+      });
+      list.appendChild(el);
+    });
+  } catch(e) { console.error(e); }
+}
+
+function openPartnerModal(partner = null) {
+  document.getElementById('partner-modal-title').textContent = partner ? 'Modifier un partenaire' : 'Ajouter un partenaire';
+  document.getElementById('partner-edit-id').value      = partner?.id || '';
+  document.getElementById('partner-nom').value          = partner?.nom || '';
+  document.getElementById('partner-description').value  = partner?.description || '';
+  document.getElementById('partner-discord').value      = partner?.discordUrl || '';
+  document.getElementById('partner-ordre').value        = partner?.ordre || '';
+  document.getElementById('partner-logo-url').value     = partner?.logoUrl || '';
+  document.getElementById('partner-logo-file').value    = '';
+
+  const preview = document.getElementById('partner-logo-preview');
+  const wrap    = document.getElementById('partner-logo-preview-wrap');
+  if (partner?.logoUrl) { preview.src = partner.logoUrl; preview.style.display = 'block'; wrap.style.display = 'none'; }
+  else { preview.style.display = 'none'; wrap.style.display = 'block'; }
+
+  openModal('partner-modal');
+}
+
+function setupPartnerModal() {
+  document.getElementById('add-partner-btn').addEventListener('click', () => openPartnerModal());
+
+  document.getElementById('partner-save-btn').addEventListener('click', async () => {
+    const id  = document.getElementById('partner-edit-id').value;
+    const nom = document.getElementById('partner-nom').value.trim();
+    if (!nom) { showToast('Nom du partenaire requis.', 'error'); return; }
+
+    try {
+      let logoUrl = document.getElementById('partner-logo-url').value;
+      const file  = document.getElementById('partner-logo-file').files[0];
+      if (file) logoUrl = await uploadFile(file, `partenaires/${Date.now()}_${file.name}`);
+
+      const data = {
+        nom,
+        description: document.getElementById('partner-description').value,
+        discordUrl:  document.getElementById('partner-discord').value,
+        ordre:       parseInt(document.getElementById('partner-ordre').value) || 99,
+        logoUrl,
+        updatedAt:   Date.now()
+      };
+
+      if (id) await updateDoc(doc(db, 'partenaires', id), data);
+      else    await addDoc(collection(db, 'partenaires'), { ...data, createdAt: Date.now() });
+
+      closeModal('partner-modal');
+      showToast('Partenaire sauvegardé !', 'success');
+      loadPartnersList();
+      loadDashboard();
+    } catch(e) {
+      console.error(e);
+      showToast('Erreur lors de la sauvegarde.', 'error');
+    }
+  });
+}
+</script>
+</body>
+</html>
