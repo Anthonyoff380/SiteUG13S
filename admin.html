@@ -448,7 +448,7 @@
 </div>
 
 <script type="module">
-// --- DEBUT DU REMPLACEMENT ---
+// --- REMPLACER DE LA LIGNE 451 À 483 ---
 import { db, auth, storage } from './firebase.js';
 import { 
   ref, uploadBytes, getDownloadURL 
@@ -460,17 +460,17 @@ import {
   onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Cette fonction manquait et empêchait la confirmation de sauvegarde
+// Fonction indispensable pour afficher les confirmations de sauvegarde
 function showToast(message, type = 'success') {
-  alert(message); 
+  alert(message);
 }
 
-// Création automatique de ton compte admin
-createUserWithEmailAndPassword(auth, "benjamin17pros@gmail.com", "ANTHO12345").catch(() => {
-  console.log("Compte déjà prêt.");
-});
+// Création/Vérification de ton compte admin par défaut
+createUserWithEmailAndPassword(auth, "benjamin17pros@gmail.com", "ANTHO12345")
+  .then(() => console.log("Compte créé !"))
+  .catch(() => console.log("Compte déjà prêt."));
 
-// Gestion de l'affichage Connexion / Admin
+// Gestion de l'affichage (Login vs Admin)
 const loginPage = document.getElementById('login-page');
 const adminPage = document.getElementById('admin-page');
 
@@ -479,12 +479,27 @@ onAuthStateChanged(auth, user => {
     loginPage.style.display = 'none';
     adminPage.style.display = 'block';
     document.getElementById('admin-email-display').textContent = user.email;
-    initAdmin(); // Lance le chargement des données
+    initAdmin(); 
   } else {
     loginPage.style.display = 'block';
     adminPage.style.display = 'none';
   }
 });
+
+// Action du bouton de connexion
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const email = document.getElementById('login-email').value;
+  const pass  = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    errEl.textContent = 'Email ou mot de passe incorrect.';
+    errEl.style.display = 'block';
+  }
+});
+// --- FIN DU REMPLACEMENT ---
 
 document.getElementById('login-btn').addEventListener('click', async () => {
   const email = document.getElementById('login-email').value;
