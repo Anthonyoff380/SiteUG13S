@@ -3,57 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UG13S | Simulation Officielle</title>
-    <!-- On importe une police stylée -->
+    <title>UG13S | Simulation</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="main-body">
 
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">UG13S<span>.</span></div>
             <div class="nav-links">
-                <a href="#">Accueil</a>
+                <a href="index.html">Accueil</a>
+                <a href="#metiers">Métiers</a>
                 <a href="#equipe">L'Équipe</a>
-                <a href="#news">Posts</a>
-                <a href="admin.html" class="admin-icon">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-                </a>
+                <a href="admin.html" class="admin-icon">⚙️</a>
             </div>
         </div>
     </nav>
 
-    <section class="hero">
+    <!-- La Hero section recevra l'image de fond via Firebase -->
+    <section class="hero" id="hero-bg">
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <span class="badge">Saison 2026</span>
+            <span class="badge">Simulation Immersive</span>
             <h1>L'EXCELLENCE DE LA <br><span class="gradient-text">SIMULATION</span></h1>
-            <p>Plongez dans l'univers UG13S. Une expérience immersive gérée par des passionnés.</p>
-            <div class="hero-btns">
-                <a href="#equipe" class="btn-primary">Découvrir l'équipe</a>
-                <a href="#" class="btn-secondary">Rejoindre le Discord</a>
-            </div>
+            <p id="hero-desc">Bienvenue sur le portail officiel de l'UG13S.</p>
         </div>
     </section>
 
-    <section id="equipe" class="team-section">
+    <!-- SECTION MÉTIERS -->
+    <section id="metiers" class="content-section">
         <div class="section-header">
-            <h2>Équipe <span>UG13S</span></h2>
-            <p>Les visages derrière le projet</p>
+            <h2>NOS <span>MÉTIERS</span></h2>
+            <p>Découvrez les rôles disponibles en jeu</p>
         </div>
-        <div id="team-container" class="team-grid">
-            <!-- Exemple d'un "Embed" généré par JS -->
-            <div class="member-card">
-                <div class="card-inner">
-                    <img src="https://via.placeholder.com/150" class="member-img">
-                    <div class="member-info">
-                        <h3>Jean Dupont</h3>
-                        <span class="role">Fondateur</span>
-                        <p>Passionné de sim-racing et de gestion communautaire.</p>
-                    </div>
-                </div>
-            </div>
+        <div id="jobs-grid" class="grid-container"></div>
+    </section>
+
+    <!-- SECTION ÉQUIPE -->
+    <section id="equipe" class="content-section">
+        <div class="section-header">
+            <h2>L'ÉQUIPE <span>UG13S</span></h2>
+            <p>Le staff à votre écoute</p>
         </div>
+        <div id="team-grid" class="grid-container"></div>
     </section>
 
     <script type="module" src="script.js"></script>

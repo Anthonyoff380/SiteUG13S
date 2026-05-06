@@ -1,33 +1,41 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  // COLLE TES INFOS ICI
-  apiKey: "AIzaSyDAcd1Gsbrks6TRum6mEhoGAY2xBaNwxIM",
-  authDomain: "siteug13s.firebaseapp.com",
-  projectId: "siteug13s",
-  storageBucket: "siteug13s.firebasestorage.app",
-};
-
+const firebaseConfig = { /* TES INFOS FIREBASE */ };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Charger l'équipe
-async function loadTeam() {
-    const querySnapshot = await getDocs(collection(db, "equipe"));
-    const container = document.getElementById('team-container');
-    
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        container.innerHTML += `
-            <div class="member-card">
-                <img src="${data.photo}" class="member-img">
-                <h3>${data.prenom} ${data.nom}</h3>
-                <p style="color: red;">${data.role}</p>
-                <small>${data.info || ""}</small>
-            </div>
-        `;
-    });
+// Charger le Fond d'écran
+const configDoc = await getDoc(doc(db, "settings", "appearance"));
+if (configDoc.exists()) {
+    document.getElementById('hero-bg').style.backgroundImage = `url('${configDoc.data().bgUrl}')`;
 }
 
-loadTeam();
+// Charger les Métiers (Jobs)
+const jobsSnap = await getDocs(collection(db, "metiers"));
+jobsSnap.forEach((doc) => {
+    const data = doc.data();
+    document.getElementById('jobs-grid').innerHTML += `
+        <div class="embed-card">
+            <img src="${data.img}" class="embed-img">
+            <div class="embed-content">
+                <h3>${data.titre}</h3>
+                <p style="color: #aaa; font-size: 0.8rem;">${data.desc}</p>
+            </div>
+        </div>`;
+});
+
+// Charger l'Équipe
+const teamSnap = await getDocs(collection(db, "equipe"));
+teamSnap.forEach((doc) => {
+    const data = doc.data();
+    document.getElementById('team-grid').innerHTML += `
+        <div class="embed-card member-card">
+            <img src="${data.photo}" class="member-img">
+            <div class="embed-content">
+                <span style="color:red; font-weight:bold;">${data.role}</span>
+                <h3>${data.nom}</h3>
+                <p>${data.info}</p>
+            </div>
+        </div>`;
+});
