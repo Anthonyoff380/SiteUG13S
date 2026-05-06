@@ -448,20 +448,29 @@
 </div>
 
 <script type="module">
-import { db, auth, storage } from './firebase.js'; // On enlève fsOps qui cause l'erreur
-import * as fsOps from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+// --- DEBUT DU REMPLACEMENT ---
+import { db, auth, storage } from './firebase.js';
+import { 
+  ref, uploadBytes, getDownloadURL 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import { 
+  collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+  onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// LIGNE POUR TON COMPTE ADMIN
-createUserWithEmailAndPassword(auth, "benjamin17pros@gmail.com", "ANTHO12345").catch(() => {});
+// Cette fonction manquait et empêchait la confirmation de sauvegarde
+function showToast(message, type = 'success') {
+  alert(message); 
+}
 
-const {
-  collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
-  onAuthStateChanged, signInWithEmailAndPassword, signOut,
-  ref, uploadBytes, getDownloadURL
-} = fsOps;
+// Création automatique de ton compte admin
+createUserWithEmailAndPassword(auth, "benjamin17pros@gmail.com", "ANTHO12345").catch(() => {
+  console.log("Compte déjà prêt.");
+});
 
-// ── AUTH ──
+// Gestion de l'affichage Connexion / Admin
 const loginPage = document.getElementById('login-page');
 const adminPage = document.getElementById('admin-page');
 
@@ -470,13 +479,28 @@ onAuthStateChanged(auth, user => {
     loginPage.style.display = 'none';
     adminPage.style.display = 'block';
     document.getElementById('admin-email-display').textContent = user.email;
-    initAdmin();
+    initAdmin(); // Lance le chargement des données
   } else {
     loginPage.style.display = 'block';
     adminPage.style.display = 'none';
   }
 });
 
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const email = document.getElementById('login-email').value;
+  const pass  = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    errEl.textContent = 'Email ou mot de passe incorrect.';
+    errEl.style.display = 'block';
+  }
+});
+// --- FIN DU REMPLACEMENT ---
+
+// Garde la suite du code (document.getElementById('logout-btn').addEventListener...) tel quel
 document.getElementById('login-btn').addEventListener('click', async () => {
   const email = document.getElementById('login-email').value;
   const pass  = document.getElementById('login-password').value;
