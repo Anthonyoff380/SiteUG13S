@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UG13S | Simulation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body id="hero-section">
+<body>
     <div class="bg-animations">
-        <div class="blob"></div>
         <div class="blob"></div>
         <div class="blob"></div>
     </div>
@@ -18,7 +17,7 @@
         <div class="nav-container">
             <div class="logo">UG13S<span>.</span></div>
             <div class="nav-links">
-                <a href="#">Accueil</a>
+                <a href="#home">Accueil</a>
                 <a href="#metiers">Métiers</a>
                 <a href="#equipe">Équipe</a>
                 <a href="login.html" class="btn-login">Espace Admin</a>
@@ -26,7 +25,7 @@
         </div>
     </nav>
 
-    <header class="hero">
+    <header class="hero" id="hero-section">
         <div class="hero-content">
             <span class="badge">SAISON 2026</span>
             <h1>L'EXCELLENCE DE LA <br><span class="gradient-text">SIMULATION</span></h1>
@@ -36,12 +35,16 @@
 
     <section id="metiers" class="section-container">
         <h2 class="section-title">NOS <span>MÉTIERS</span></h2>
-        <div id="jobs-display" class="grid-layout"></div>
+        <div id="jobs-display" class="grid-layout">
+            <!-- Injecté par JS -->
+        </div>
     </section>
 
     <section id="equipe" class="section-container">
         <h2 class="section-title">L'ÉQUIPE <span>UG13S</span></h2>
-        <div id="team-display" class="grid-layout"></div>
+        <div id="team-display" class="grid-layout">
+            <!-- Injecté par JS -->
+        </div>
     </section>
 
     <script type="module" src="script.js"></script>

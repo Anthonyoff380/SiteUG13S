@@ -15,20 +15,24 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 async function loadContent() {
-    // Fond d'écran
+    // Charger Background
     const bgSnap = await getDoc(doc(db, "settings", "appearance"));
-    if(bgSnap.exists()) document.getElementById('hero-section').style.backgroundImage = `url('${bgSnap.data().bgUrl}')`;
+    if(bgSnap.exists()) {
+        document.getElementById('hero-section').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${bgSnap.data().bgUrl}')`;
+        document.getElementById('hero-section').style.backgroundSize = "cover";
+    }
 
-    // Équipe
+    // Charger Equipe
     const teamSnap = await getDocs(collection(db, "equipe"));
+    const teamDiv = document.getElementById('team-display');
     teamSnap.forEach(doc => {
         const d = doc.data();
-        document.getElementById('team-display').innerHTML += `
+        teamDiv.innerHTML += `
             <div class="embed-card">
                 <img src="${d.photo}" class="member-photo">
-                <h4 style="color:#ff3e3e">${d.role}</h4>
+                <h4 style="color:var(--accent)">${d.role}</h4>
                 <h3>${d.nom}</h3>
-                <p>${d.info}</p>
+                <p style="color:#777; font-size:0.9rem; margin-top:10px;">${d.info}</p>
             </div>`;
     });
 }

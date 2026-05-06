@@ -16,43 +16,31 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// CONFIGURATION PROPRIÉTAIRE
-const MY_EMAIL = "benjamin17pros@gmail.com"; 
+const MY_EMAIL = "benjamin17pros@gmail.com"; // <-- METS TON EMAIL ICI
 
 onAuthStateChanged(auth, (user) => {
     if (!user) {
         window.location.href = "login.html";
     } else {
-        document.getElementById('user-welcome').innerText = `Connecté en tant que : ${user.email}`;
-        // Vérifie si c'est toi
         if (user.email === MY_EMAIL) {
             document.getElementById('super-admin-section').style.display = "block";
         }
     }
 });
 
-// Créer un nouvel admin
-document.getElementById('create-admin-btn').addEventListener('click', () => {
-    const email = document.getElementById('new-admin-email').value;
-    const pass = document.getElementById('new-admin-pass').value;
-    createUserWithEmailAndPassword(auth, email, pass)
-        .then(() => alert("Compte admin créé !"))
-        .catch(err => alert("Erreur : " + err.message));
-});
+// Créer un autre admin
+const createBtn = document.getElementById('create-admin-btn');
+if(createBtn) {
+    createBtn.addEventListener('click', () => {
+        const email = document.getElementById('new-admin-email').value;
+        const pass = document.getElementById('new-admin-pass').value;
+        createUserWithEmailAndPassword(auth, email, pass)
+            .then(() => alert("Succès : Compte créé !"))
+            .catch(err => alert("Erreur : " + err.message));
+    });
+}
 
-// Déconnexion
-document.getElementById('logout-btn').addEventListener('click', () => {
-    signOut(auth).then(() => window.location.href = "index.html");
-});
-
-// Enregistrer le BG
-document.getElementById('save-bg').addEventListener('click', async () => {
-    const url = document.getElementById('bg-url').value;
-    await setDoc(doc(db, "settings", "appearance"), { bgUrl: url });
-    alert("Background mis à jour !");
-});
-
-// Ajouter membre
+// Ajouter un membre
 document.getElementById('add-member').addEventListener('click', async () => {
     await addDoc(collection(db, "equipe"), {
         nom: document.getElementById('m-nom').value,
@@ -60,5 +48,12 @@ document.getElementById('add-member').addEventListener('click', async () => {
         photo: document.getElementById('m-img').value,
         info: document.getElementById('m-info').value
     });
-    alert("Membre ajouté !");
+    alert("Ajouté !");
+});
+
+// Update Background
+document.getElementById('save-bg').addEventListener('click', async () => {
+    const url = document.getElementById('bg-url').value;
+    await setDoc(doc(db, "settings", "appearance"), { bgUrl: url });
+    alert("Fond mis à jour !");
 });
