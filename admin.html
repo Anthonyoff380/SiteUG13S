@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/favicon.ico"/>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    /* Styles admin de base */
+    /* Styles originaux rétablis */
     .admin-header {
       background: var(--bg-card);
       border-bottom: 1px solid var(--border);
@@ -109,10 +109,6 @@
       width: 100%;
       max-width: 400px;
     }
-    .login-header { text-align: center; margin-bottom: 2rem; }
-    .login-logo { width: 64px; height: 64px; margin-bottom: 1rem; }
-    .form-group { margin-bottom: 1.5rem; }
-    .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
     .form-control {
       width: 100%;
       background: rgba(0,0,0,0.2);
@@ -120,30 +116,7 @@
       border-radius: 6px;
       padding: 0.75rem 1rem;
       color: var(--text);
-      transition: border-color 0.2s;
-    }
-    .form-control:focus { border-color: var(--red-light); outline: none; }
-    .btn-login {
-      width: 100%;
-      padding: 0.85rem;
-      background: var(--red-main);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn-login:hover { background: var(--red-hover); }
-    .login-error {
-      background: rgba(198,40,40,0.1);
-      border: 1px solid var(--red-main);
-      color: #ff8a80;
-      padding: 0.75rem;
-      border-radius: 6px;
-      margin-bottom: 1.5rem;
-      font-size: 0.85rem;
-      display: none;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
@@ -152,32 +125,23 @@
   <div id="login-page">
     <div class="login-container">
       <div class="login-card">
-        <div class="login-header">
-          <img src="assets/logo.png" alt="Logo" class="login-logo">
-          <h2>Administration</h2>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Accès réservé au staff</p>
-        </div>
-        <div id="login-error" class="login-error"></div>
-        <div class="form-group">
-          <label>Adresse Email</label>
-          <input type="email" id="login-email" class="form-control" placeholder="admin@urgence13.fr">
-        </div>
-        <div class="form-group">
-          <label>Mot de passe</label>
-          <input type="password" id="login-password" class="form-control" placeholder="••••••••">
-        </div>
-        <button id="login-btn" class="btn-login">Se connecter</button>
+        <img src="assets/logo.png" alt="Logo" style="width: 64px; margin-bottom: 1rem;">
+        <h2>Administration</h2>
+        <div id="login-error" style="color: var(--red-light); margin-bottom: 1rem; display: none;"></div>
+        <input type="email" id="login-email" class="form-control" placeholder="Email">
+        <input type="password" id="login-password" class="form-control" placeholder="Mot de passe">
+        <button id="login-btn" class="btn-login" style="width: 100%; padding: 0.85rem; background: var(--red-main); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Se connecter</button>
       </div>
     </div>
   </div>
 
   <div id="admin-page" style="display:none;">
     <header class="admin-header">
-      <a href="index.html" class="admin-brand">
+      <div class="admin-brand">
         <img src="assets/logo.png" alt="Logo" style="height: 32px;">
-        <span style="font-family: var(--font-head); font-weight: bold;">URGENCE 13</span>
+        <span style="font-weight: bold;">URGENCE 13</span>
         <span class="admin-brand-badge">Admin</span>
-      </a>
+      </div>
       <div style="display: flex; align-items: center; gap: 20px;">
         <span id="admin-email-display" style="color: var(--text-muted); font-size: 0.85rem;"></span>
         <button id="logout-btn" class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;">DÉCONNEXION</button>
@@ -188,259 +152,152 @@
       <aside class="admin-sidebar">
         <div class="admin-nav-group">
           <span class="admin-nav-label">Général</span>
-          <div class="admin-nav-item active" data-section="dashboard">
-            <span>Tableau de bord</span>
-          </div>
-          <div class="admin-nav-item" data-section="site">
-            <span>Config. du site</span>
-          </div>
+          <div class="admin-nav-item active" data-section="dashboard">Tableau de bord</div>
+          <div class="admin-nav-item" data-section="site">Config. du site</div>
         </div>
-
         <div class="admin-nav-group">
           <span class="admin-nav-label">Contenu</span>
-          <div class="admin-nav-item" data-section="team">
-            <span>Équipe</span>
-          </div>
-          <div class="admin-nav-item" data-section="metiers">
-            <span>Métiers</span>
-          </div>
-          <div class="admin-nav-item" data-section="partners">
-            <span>Partenaires</span>
-          </div>
+          <div class="admin-nav-item" data-section="team">Équipe</div>
+          <div class="admin-nav-item" data-section="metiers">Métiers</div>
+          <div class="admin-nav-item" data-section="partners">Partenaires</div>
         </div>
       </aside>
 
       <main class="admin-main">
         <section id="section-dashboard" class="admin-section active">
-          <h1 class="section-title">Tableau de bord</h1>
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-value" id="dash-team">-</div>
-              <div class="stat-label">Membres d'équipe</div>
+          <h1>Tableau de bord</h1>
+          <div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+            <div class="card" style="padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; text-align: center;">
+              <div id="dash-team" style="font-size: 2rem; font-weight: bold;">-</div>
+              <div style="color: var(--text-muted);">Membres</div>
             </div>
-            <div class="stat-card">
-              <div class="stat-value" id="dash-metiers">-</div>
-              <div class="stat-label">Métiers configurés</div>
+            <div class="card" style="padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; text-align: center;">
+              <div id="dash-metiers" style="font-size: 2rem; font-weight: bold;">-</div>
+              <div style="color: var(--text-muted);">Métiers</div>
             </div>
-            <div class="stat-card">
-              <div class="stat-value" id="dash-partners">-</div>
-              <div class="stat-label">Partenaires</div>
+            <div class="card" style="padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; text-align: center;">
+              <div id="dash-partners" style="font-size: 2rem; font-weight: bold;">-</div>
+              <div style="color: var(--text-muted);">Partenaires</div>
             </div>
           </div>
         </section>
 
         <section id="section-site" class="admin-section">
-          <h1 class="section-title">Configuration du Site</h1>
-          <div class="card">
-            <div class="grid-2">
-              <div class="form-group">
-                <label>Nom du site</label>
-                <input type="text" id="cfg-siteName" class="form-control">
-              </div>
-              <div class="form-group">
-                <label>Lien Discord</label>
-                <input type="text" id="cfg-discord" class="form-control">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Description / Sous-titre Hero</label>
-              <textarea id="cfg-heroSubtitle" class="form-control" rows="4"></textarea>
-            </div>
-            
-            <div class="form-group">
-              <label>Logo du site (URL ou Upload)</label>
-              <div id="logo-preview-wrap" style="width: 100px; height: 100px; border: 2px dashed var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                <img id="cfg-logo-preview" style="max-width: 100%; max-height: 100%; display: none;">
-                <span id="logo-placeholder" style="color: var(--text-muted); font-size: 2rem;">+</span>
-              </div>
-              <input type="file" id="cfg-logo-file" accept="image/*" class="form-control" style="margin-bottom: 10px;">
-              <input type="text" id="cfg-logo-url" class="form-control" placeholder="ou collez une URL d'image...">
-            </div>
-
-            <div class="form-group">
-                <label>Stat : Membres</label>
-                <input type="text" id="cfg-statMembers" class="form-control">
-            </div>
-
-            <button id="save-site-config" class="btn-primary">SAUVEGARDER LA CONFIG</button>
+          <h1>Configuration du Site</h1>
+          <div class="card" style="padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;">
+            <label>Nom du site</label>
+            <input type="text" id="cfg-siteName" class="form-control">
+            <label>Lien Discord</label>
+            <input type="text" id="cfg-discord" class="form-control">
+            <label>Description Hero</label>
+            <textarea id="cfg-heroSubtitle" class="form-control" rows="4"></textarea>
+            <label>Logo URL</label>
+            <input type="text" id="cfg-logo-url" class="form-control">
+            <button id="save-site-config" class="btn-primary" style="padding: 10px 20px; background: var(--red-main); color: white; border: none; border-radius: 6px; cursor: pointer;">SAUVEGARDER</button>
           </div>
         </section>
 
         <section id="section-team" class="admin-section">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <h1 class="section-title" style="margin: 0;">Gestion de l'Équipe</h1>
-            <button id="add-member-btn" class="btn-primary">AJOUTER UN MEMBRE</button>
+            <h1>Gestion de l'Équipe</h1>
+            <button id="add-member-btn" class="btn-primary" style="padding: 10px 20px; background: var(--red-main); color: white; border: none; border-radius: 6px; cursor: pointer;">AJOUTER UN MEMBRE</button>
           </div>
-          <div id="team-list" class="grid-3">
-            </div>
+          <div id="team-list" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;"></div>
         </section>
 
         <section id="section-metiers" class="admin-section">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <h1 class="section-title" style="margin: 0;">Gestion des Métiers</h1>
-            <button id="add-metier-btn" class="btn-primary">AJOUTER UN MÉTIER</button>
+            <h1>Gestion des Métiers</h1>
+            <button id="add-metier-btn" class="btn-primary" style="padding: 10px 20px; background: var(--red-main); color: white; border: none; border-radius: 6px; cursor: pointer;">AJOUTER UN MÉTIER</button>
           </div>
-          <div id="metiers-list" class="grid-2">
-            </div>
+          <div id="metiers-list" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;"></div>
         </section>
 
         <section id="section-partners" class="admin-section">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <h1 class="section-title" style="margin: 0;">Gestion des Partenaires</h1>
-            <button id="add-partner-btn" class="btn-primary">AJOUTER UN PARTENAIRE</button>
+            <h1>Gestion des Partenaires</h1>
+            <button id="add-partner-btn" class="btn-primary" style="padding: 10px 20px; background: var(--red-main); color: white; border: none; border-radius: 6px; cursor: pointer;">AJOUTER UN PARTENAIRE</button>
           </div>
-          <div id="partners-list" class="grid-3">
-            </div>
+          <div id="partners-list" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;"></div>
         </section>
       </main>
     </div>
   </div>
 
-  <div id="team-modal" class="modal">
-    <div class="modal-content">
+  <div id="team-modal" class="modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="modal-content" style="background: var(--bg-card); padding: 2rem; border-radius: 12px; width: 500px;">
       <h2 id="team-modal-title">Nouveau Membre</h2>
       <input type="hidden" id="team-edit-id">
-      <div class="grid-2">
-        <div class="form-group">
-          <label>Pseudo</label>
-          <input type="text" id="team-pseudo" class="form-control">
-        </div>
-        <div class="form-group">
-          <label>Rôle (ex: Fondateur)</label>
-          <input type="text" id="team-role" class="form-control">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Ordre d'affichage (1-99)</label>
-        <input type="number" id="team-ordre" class="form-control" value="10">
-      </div>
-      <div class="form-group">
-        <label>Avatar (URL ou Upload)</label>
-        <input type="file" id="team-avatar-file" accept="image/*" class="form-control" style="margin-bottom: 10px;">
-        <input type="text" id="team-avatar-url" class="form-control">
-      </div>
-      <div class="modal-actions">
+      <input type="text" id="team-pseudo" class="form-control" placeholder="Pseudo">
+      <input type="text" id="team-role" class="form-control" placeholder="Rôle">
+      <input type="number" id="team-ordre" class="form-control" value="10" placeholder="Ordre">
+      <input type="text" id="team-avatar-url" class="form-control" placeholder="URL Avatar">
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
         <button class="btn-secondary" onclick="closeModal('team-modal')">Annuler</button>
-        <button id="team-save-btn" class="btn-primary">Enregistrer</button>
+        <button id="team-save-btn" class="btn-primary" style="padding: 8px 15px; background: var(--red-main); color: white; border: none; border-radius: 4px; cursor: pointer;">Enregistrer</button>
       </div>
     </div>
   </div>
 
-  <div id="metier-modal" class="modal">
-    <div class="modal-content">
+  <div id="metier-modal" class="modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="modal-content" style="background: var(--bg-card); padding: 2rem; border-radius: 12px; width: 500px;">
       <h2 id="metier-modal-title">Nouveau Métier</h2>
       <input type="hidden" id="metier-edit-id">
-      <div class="form-group">
-        <label>Nom du métier</label>
-        <input type="text" id="metier-nom" class="form-control">
-      </div>
-      <div class="form-group">
-        <label>Description courte</label>
-        <textarea id="metier-description" class="form-control" rows="3"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Image (URL ou Upload)</label>
-        <input type="file" id="metier-image-file" accept="image/*" class="form-control" style="margin-bottom: 10px;">
-        <input type="text" id="metier-image-url" class="form-control">
-      </div>
-      <div class="modal-actions">
+      <input type="text" id="metier-nom" class="form-control" placeholder="Nom">
+      <textarea id="metier-description" class="form-control" placeholder="Description"></textarea>
+      <input type="text" id="metier-image-url" class="form-control" placeholder="URL Image">
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
         <button class="btn-secondary" onclick="closeModal('metier-modal')">Annuler</button>
-        <button id="metier-save-btn" class="btn-primary">Enregistrer</button>
+        <button id="metier-save-btn" class="btn-primary" style="padding: 8px 15px; background: var(--red-main); color: white; border: none; border-radius: 4px; cursor: pointer;">Enregistrer</button>
       </div>
     </div>
   </div>
 
-  <div id="partner-modal" class="modal">
-    <div class="modal-content">
+  <div id="partner-modal" class="modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="modal-content" style="background: var(--bg-card); padding: 2rem; border-radius: 12px; width: 500px;">
       <h2 id="partner-modal-title">Nouveau Partenaire</h2>
       <input type="hidden" id="partner-edit-id">
-      <div class="form-group">
-        <label>Nom</label>
-        <input type="text" id="partner-nom" class="form-control">
-      </div>
-      <div class="form-group">
-        <label>Description</label>
-        <textarea id="partner-description" class="form-control"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Lien Discord</label>
-        <input type="text" id="partner-discord" class="form-control">
-      </div>
-      <div class="form-group">
-          <label>Ordre</label>
-          <input type="number" id="partner-ordre" class="form-control" value="10">
-      </div>
-      <div class="form-group">
-        <label>Logo (URL ou Upload)</label>
-        <input type="file" id="partner-logo-file" accept="image/*" class="form-control" style="margin-bottom: 10px;">
-        <input type="text" id="partner-logo-url" class="form-control">
-      </div>
-      <div class="modal-actions">
+      <input type="text" id="partner-nom" class="form-control" placeholder="Nom">
+      <input type="text" id="partner-logo-url" class="form-control" placeholder="URL Logo">
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
         <button class="btn-secondary" onclick="closeModal('partner-modal')">Annuler</button>
-        <button id="partner-save-btn" class="btn-primary">Enregistrer</button>
+        <button id="partner-save-btn" class="btn-primary" style="padding: 8px 15px; background: var(--red-main); color: white; border: none; border-radius: 4px; cursor: pointer;">Enregistrer</button>
       </div>
     </div>
   </div>
 
   <script type="module">
     import { db, auth, storage } from './firebase.js';
-    import { 
-      ref, uploadBytes, getDownloadURL 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
-    import { 
-      collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { 
-      onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+    import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // Fonction indispensable pour confirmer les sauvegardes sans erreur
-    function showToast(message, type = 'success') {
-      alert(message);
-    }
+    function showToast(message) { alert(message); }
 
-    // Création automatique de ton compte admin
-    createUserWithEmailAndPassword(auth, "benjamin17pros@gmail.com", "ANTHO12345")
-      .then(() => console.log("Compte admin créé !"))
-      .catch(() => {});
-
-    // Gestion de l'affichage (Login vs Admin)
-    const loginPage = document.getElementById('login-page');
-    const adminPage = document.getElementById('admin-page');
-
+    // Login logic
     onAuthStateChanged(auth, user => {
       if (user) {
-        loginPage.style.display = 'none';
-        adminPage.style.display = 'block';
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('admin-page').style.display = 'block';
         document.getElementById('admin-email-display').textContent = user.email;
-        initAdmin(); 
+        initAdmin();
       } else {
-        loginPage.style.display = 'block';
-        adminPage.style.display = 'none';
+        document.getElementById('login-page').style.display = 'block';
+        document.getElementById('admin-page').style.display = 'none';
       }
     });
 
-    // Connexion
     document.getElementById('login-btn').addEventListener('click', async () => {
       const email = document.getElementById('login-email').value;
-      const pass  = document.getElementById('login-password').value;
-      const errEl = document.getElementById('login-error');
-      errEl.style.display = 'none';
+      const pass = document.getElementById('login-password').value;
       try {
         await signInWithEmailAndPassword(auth, email, pass);
-      } catch(e) {
-        errEl.textContent = 'Email ou mot de passe incorrect.';
-        errEl.style.display = 'block';
-      }
-    });
-
-    document.getElementById('login-password').addEventListener('keydown', e => {
-      if (e.key === 'Enter') document.getElementById('login-btn').click();
+      } catch(e) { alert("Erreur de connexion"); }
     });
 
     document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
-    // ── SIDEBAR NAVIGATION ──
+    // Nav
     document.querySelectorAll('.admin-nav-item').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
@@ -450,48 +307,16 @@
       });
     });
 
-    // ── UPLOAD HELPER ──
-    async function uploadFile(file, path) {
-      const storageRef = ref(storage, path);
-      await uploadBytes(storageRef, file);
-      return await getDownloadURL(storageRef);
-    }
-
-    function bindFilePreview(inputId, previewId, wrapId) {
-      document.getElementById(inputId).addEventListener('change', e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const preview = document.getElementById(previewId);
-        const wrap    = document.getElementById(wrapId);
-        const reader  = new FileReader();
-        reader.onload  = ev => {
-          preview.src = ev.target.result;
-          preview.style.display = 'block';
-          if (wrap) wrap.style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    // ── INITIALISATION ──
+    // Init
     async function initAdmin() {
-      bindFilePreview('cfg-logo-file', 'cfg-logo-preview', 'logo-preview-wrap');
       loadDashboard();
       loadSiteConfig();
-      setupSiteConfigSave();
-      
-      // Init sections
       loadTeamList();
-      setupTeamModal();
-      
       loadMetiersList();
-      setupMetierModal();
-
       loadPartnersList();
-      setupPartnerModal();
     }
 
-    // ── DASHBOARD ──
+    // Dashboard
     async function loadDashboard() {
       const [t, m, p] = await Promise.all([
         getDocs(collection(db, 'team')),
@@ -503,277 +328,114 @@
       document.getElementById('dash-partners').textContent = p.size;
     }
 
-    // ── SITE CONFIG ──
+    // Config Site
     async function loadSiteConfig() {
       const snap = await getDoc(doc(db, 'config', 'site'));
       if (snap.exists()) {
         const d = snap.data();
         document.getElementById('cfg-siteName').value = d.siteName || '';
         document.getElementById('cfg-heroSubtitle').value = d.heroSubtitle || '';
-        document.getElementById('cfg-discord').value = d.discordUrl || '';
-        document.getElementById('cfg-statMembers').value = d.statMembers || '';
         document.getElementById('cfg-logo-url').value = d.logoUrl || '';
-        if (d.logoUrl) {
-          const preview = document.getElementById('cfg-logo-preview');
-          preview.src = d.logoUrl;
-          preview.style.display = 'block';
-          document.getElementById('logo-preview-wrap').style.display = 'none';
-        }
+        document.getElementById('cfg-discord').value = d.discordUrl || '';
       }
     }
 
-    function setupSiteConfigSave() {
-      document.getElementById('save-site-config').addEventListener('click', async () => {
-        try {
-          let logoUrl = document.getElementById('cfg-logo-url').value;
-          const file = document.getElementById('cfg-logo-file').files[0];
-          if (file) logoUrl = await uploadFile(file, `site/logo_${Date.now()}`);
+    document.getElementById('save-site-config').addEventListener('click', async () => {
+      await setDoc(doc(db, 'config', 'site'), {
+        siteName: document.getElementById('cfg-siteName').value,
+        heroSubtitle: document.getElementById('cfg-heroSubtitle').value,
+        logoUrl: document.getElementById('cfg-logo-url').value,
+        discordUrl: document.getElementById('cfg-discord').value,
+        updatedAt: Date.now()
+      }, { merge: true });
+      showToast('Sauvegardé !');
+    });
 
-          await setDoc(doc(db, 'config', 'site'), {
-            siteName: document.getElementById('cfg-siteName').value,
-            heroSubtitle: document.getElementById('cfg-heroSubtitle').value,
-            discordUrl: document.getElementById('cfg-discord').value,
-            statMembers: document.getElementById('cfg-statMembers').value,
-            logoUrl,
-            updatedAt: Date.now()
-          }, { merge: true });
-          showToast('Configuration sauvegardée !');
-        } catch(e) {
-          showToast('Erreur lors de la sauvegarde.', 'error');
-        }
-      });
-    }
-
-    // ── TEAM ──
+    // Équipe (Team)
     async function loadTeamList() {
       const container = document.getElementById('team-list');
-      container.innerHTML = '<p>Chargement...</p>';
       const snap = await getDocs(collection(db, 'team'));
       container.innerHTML = '';
-      
-      const sorted = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-                             .sort((a,b) => (a.ordre || 10) - (b.ordre || 10));
-
-      sorted.forEach(member => {
+      snap.forEach(dDoc => {
+        const d = dDoc.data();
         const div = document.createElement('div');
-        div.className = 'card';
-        div.style.textAlign = 'center';
-        div.innerHTML = `
-          <img src="${member.avatarUrl || 'assets/logo.png'}" style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 10px; object-fit: cover;">
-          <h3 style="margin: 0;">${member.pseudo}</h3>
-          <p style="color: var(--text-muted); font-size: 0.8rem; margin: 5px 0;">${member.role}</p>
-          <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
-            <button class="btn-secondary" style="padding: 4px 10px; font-size: 0.7rem;" onclick="editMember('${member.id}')">ÉDITER</button>
-            <button class="btn-secondary" style="padding: 4px 10px; font-size: 0.7rem; color: #ff8a80;" onclick="deleteMember('${member.id}')">SUPPRIMER</button>
-          </div>
-        `;
+        div.style.background = 'var(--bg-card)';
+        div.style.padding = '10px';
+        div.style.borderRadius = '8px';
+        div.innerHTML = `<strong>${d.pseudo}</strong> (${d.role}) <br> 
+          <button onclick="deleteMember('${dDoc.id}')" style="color: red; background: none; border: none; cursor: pointer;">Supprimer</button>`;
         container.appendChild(div);
       });
     }
+    window.deleteMember = async (id) => { if(confirm('Sûr ?')) { await deleteDoc(doc(db, 'team', id)); loadTeamList(); } };
 
-    window.editMember = async (id) => {
-      const snap = await getDoc(doc(db, 'team', id));
-      if (snap.exists()) {
-        const d = snap.data();
-        document.getElementById('team-edit-id').value = id;
-        document.getElementById('team-pseudo').value = d.pseudo;
-        document.getElementById('team-role').value = d.role;
-        document.getElementById('team-ordre').value = d.ordre || 10;
-        document.getElementById('team-avatar-url').value = d.avatarUrl || '';
-        document.getElementById('team-modal-title').textContent = "Modifier le membre";
-        openModal('team-modal');
-      }
-    };
-
-    window.deleteMember = async (id) => {
-      if (confirm('Supprimer ce membre ?')) {
-        await deleteDoc(doc(db, 'team', id));
-        loadTeamList();
-      }
-    };
-
-    function setupTeamModal() {
-      document.getElementById('add-member-btn').addEventListener('click', () => {
-        document.getElementById('team-edit-id').value = '';
-        document.getElementById('team-pseudo').value = '';
-        document.getElementById('team-role').value = '';
-        document.getElementById('team-avatar-url').value = '';
-        document.getElementById('team-modal-title').textContent = "Nouveau Membre";
-        openModal('team-modal');
+    document.getElementById('add-member-btn').addEventListener('click', () => openModal('team-modal'));
+    document.getElementById('team-save-btn').addEventListener('click', async () => {
+      await addDoc(collection(db, 'team'), {
+        pseudo: document.getElementById('team-pseudo').value,
+        role: document.getElementById('team-role').value,
+        ordre: parseInt(document.getElementById('team-ordre').value),
+        avatarUrl: document.getElementById('team-avatar-url').value
       });
+      closeModal('team-modal');
+      loadTeamList();
+    });
 
-      document.getElementById('team-save-btn').addEventListener('click', async () => {
-        const id = document.getElementById('team-edit-id').value;
-        const pseudo = document.getElementById('team-pseudo').value.trim();
-        if (!pseudo) return;
-
-        try {
-          let avatarUrl = document.getElementById('team-avatar-url').value;
-          const file = document.getElementById('team-avatar-file').files[0];
-          if (file) avatarUrl = await uploadFile(file, `team/${Date.now()}_${file.name}`);
-
-          const data = {
-            pseudo,
-            role: document.getElementById('team-role').value,
-            ordre: parseInt(document.getElementById('team-ordre').value) || 10,
-            avatarUrl,
-            updatedAt: Date.now()
-          };
-
-          if (id) await updateDoc(doc(db, 'team', id), data);
-          else await addDoc(collection(db, 'team'), { ...data, createdAt: Date.now() });
-
-          closeModal('team-modal');
-          showToast('Membre sauvegardé !');
-          loadTeamList();
-        } catch(e) { showToast('Erreur', 'error'); }
-      });
-    }
-
-    // ── MÉTIERS ──
+    // Métiers
     async function loadMetiersList() {
       const container = document.getElementById('metiers-list');
       const snap = await getDocs(collection(db, 'metiers'));
       container.innerHTML = '';
-      snap.forEach(m => {
-        const d = m.data();
+      snap.forEach(dDoc => {
+        const d = dDoc.data();
         const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-          <div style="display: flex; gap: 20px;">
-            <img src="${d.imageUrl}" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover;">
-            <div style="flex: 1;">
-              <h3 style="margin: 0;">${d.nom}</h3>
-              <p style="font-size: 0.85rem; color: var(--text-muted); margin: 10px 0;">${d.description}</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="btn-secondary" style="padding: 4px 10px; font-size: 0.7rem;" onclick="editMetier('${m.id}')">ÉDITER</button>
-                <button class="btn-secondary" style="padding: 4px 10px; font-size: 0.7rem; color: #ff8a80;" onclick="deleteMetier('${m.id}')">SUPPRIMER</button>
-              </div>
-            </div>
-          </div>
-        `;
+        div.style.background = 'var(--bg-card)';
+        div.style.padding = '10px';
+        div.innerHTML = `<strong>${d.nom}</strong> <br> <button onclick="deleteMetier('${dDoc.id}')">Supprimer</button>`;
         container.appendChild(div);
       });
     }
-
-    window.editMetier = async (id) => {
-      const snap = await getDoc(doc(db, 'metiers', id));
-      const d = snap.data();
-      document.getElementById('metier-edit-id').value = id;
-      document.getElementById('metier-nom').value = d.nom;
-      document.getElementById('metier-description').value = d.description;
-      document.getElementById('metier-image-url').value = d.imageUrl;
-      openModal('metier-modal');
-    };
-
-    window.deleteMetier = async (id) => {
-      if (confirm('Supprimer ce métier ?')) {
-        await deleteDoc(doc(db, 'metiers', id));
-        loadMetiersList();
-      }
-    };
-
-    function setupMetierModal() {
-      document.getElementById('add-metier-btn').addEventListener('click', () => {
-        document.getElementById('metier-edit-id').value = '';
-        openModal('metier-modal');
+    window.deleteMetier = async (id) => { await deleteDoc(doc(db, 'metiers', id)); loadMetiersList(); };
+    document.getElementById('add-metier-btn').addEventListener('click', () => openModal('metier-modal'));
+    document.getElementById('metier-save-btn').addEventListener('click', async () => {
+      await addDoc(collection(db, 'metiers'), {
+        nom: document.getElementById('metier-nom').value,
+        description: document.getElementById('metier-description').value,
+        imageUrl: document.getElementById('metier-image-url').value
       });
-      document.getElementById('metier-save-btn').addEventListener('click', async () => {
-        const id = document.getElementById('metier-edit-id').value;
-        try {
-          let imageUrl = document.getElementById('metier-image-url').value;
-          const file = document.getElementById('metier-image-file').files[0];
-          if (file) imageUrl = await uploadFile(file, `metiers/${Date.now()}_${file.name}`);
+      closeModal('metier-modal');
+      loadMetiersList();
+    });
 
-          const data = {
-            nom: document.getElementById('metier-nom').value,
-            description: document.getElementById('metier-description').value,
-            imageUrl
-          };
-          if (id) await updateDoc(doc(db, 'metiers', id), data);
-          else await addDoc(collection(db, 'metiers'), data);
-
-          closeModal('metier-modal');
-          showToast('Métier sauvegardé !');
-          loadMetiersList();
-        } catch(e) { showToast('Erreur', 'error'); }
-      });
-    }
-
-    // ── PARTENAIRES ──
+    // Partenaires
     async function loadPartnersList() {
       const container = document.getElementById('partners-list');
       const snap = await getDocs(collection(db, 'partenaires'));
       container.innerHTML = '';
-      snap.forEach(p => {
-        const d = p.data();
+      snap.forEach(dDoc => {
+        const d = dDoc.data();
         const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-          <img src="${d.logoUrl}" style="width: 100%; height: 120px; object-fit: contain; margin-bottom: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px;">
-          <h3 style="margin: 0;">${d.nom}</h3>
-          <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button class="btn-secondary" style="padding: 4px 10px; font-size: 0.7rem;" onclick="editPartner('${p.id}')">ÉDITER</button>
-            <button class="btn-secondary" style="padding: 4px 10px; font-size: 0.7rem; color: #ff8a80;" onclick="deletePartner('${p.id}')">SUPPRIMER</button>
-          </div>
-        `;
+        div.style.background = 'var(--bg-card)';
+        div.style.padding = '10px';
+        div.innerHTML = `<strong>${d.nom}</strong> <br> <button onclick="deletePartner('${dDoc.id}')">Supprimer</button>`;
         container.appendChild(div);
       });
     }
-
-    window.editPartner = async (id) => {
-      const snap = await getDoc(doc(db, 'partenaires', id));
-      const d = snap.data();
-      document.getElementById('partner-edit-id').value = id;
-      document.getElementById('partner-nom').value = d.nom;
-      document.getElementById('partner-description').value = d.description || '';
-      document.getElementById('partner-discord').value = d.discordUrl || '';
-      document.getElementById('partner-logo-url').value = d.logoUrl;
-      document.getElementById('partner-ordre').value = d.ordre || 10;
-      openModal('partner-modal');
-    };
-
-    window.deletePartner = async (id) => {
-      if (confirm('Supprimer ce partenaire ?')) {
-        await deleteDoc(doc(db, 'partenaires', id));
-        loadPartnersList();
-      }
-    };
-
-    function setupPartnerModal() {
-      document.getElementById('add-partner-btn').addEventListener('click', () => {
-        document.getElementById('partner-edit-id').value = '';
-        openModal('partner-modal');
+    window.deletePartner = async (id) => { await deleteDoc(doc(db, 'partenaires', id)); loadPartnersList(); };
+    document.getElementById('add-partner-btn').addEventListener('click', () => openModal('partner-modal'));
+    document.getElementById('partner-save-btn').addEventListener('click', async () => {
+      await addDoc(collection(db, 'partenaires'), {
+        nom: document.getElementById('partner-nom').value,
+        logoUrl: document.getElementById('partner-logo-url').value
       });
-      document.getElementById('partner-save-btn').addEventListener('click', async () => {
-        const id = document.getElementById('partner-edit-id').value;
-        try {
-          let logoUrl = document.getElementById('partner-logo-url').value;
-          const file = document.getElementById('partner-logo-file').files[0];
-          if (file) logoUrl = await uploadFile(file, `partners/${Date.now()}_${file.name}`);
-
-          const data = {
-            nom: document.getElementById('partner-nom').value,
-            description: document.getElementById('partner-description').value,
-            discordUrl: document.getElementById('partner-discord').value,
-            ordre: parseInt(document.getElementById('partner-ordre').value) || 10,
-            logoUrl
-          };
-          if (id) await updateDoc(doc(db, 'partenaires', id), data);
-          else await addDoc(collection(db, 'partenaires'), data);
-
-          closeModal('partner-modal');
-          showToast('Partenaire sauvegardé !');
-          loadPartnersList();
-        } catch(e) { showToast('Erreur', 'error'); }
-      });
-    }
+      closeModal('partner-modal');
+      loadPartnersList();
+    });
 
     // Modal Helpers
-    window.openModal = (id) => document.getElementById(id).classList.add('active');
-    window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+    window.openModal = (id) => document.getElementById(id).style.display = 'flex';
+    window.closeModal = (id) => document.getElementById(id).style.display = 'none';
 
   </script>
-
 </body>
 </html>
