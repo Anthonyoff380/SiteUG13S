@@ -2,18 +2,47 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UG13S | Simulation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
-    <title>Connexion Admin | UG13S</title>
 </head>
-<body class="login-page">
-    <div class="login-card">
-        <h2>ACCÈS <span>RESTREINT</span></h2>
-        <input type="email" id="email" placeholder="Email Admin">
-        <input type="password" id="password" placeholder="Mot de passe">
-        <button id="login-btn">Se connecter</button>
-        <p id="error-msg" style="color: red; font-size: 0.8rem; margin-top: 10px;"></p>
-    </div>
-    <script type="module" src="auth.js"></script>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">UG13S<span>.</span></div>
+            <div class="nav-links">
+                <a href="#home">Accueil</a>
+                <a href="#metiers">Métiers</a>
+                <a href="#equipe">Équipe</a>
+                <a href="login.html" class="admin-btn">⚙️</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" id="hero-section">
+        <div class="hero-content">
+            <span class="badge">SAISON 2026</span>
+            <h1>L'EXCELLENCE DE LA <br><span class="gradient-text">SIMULATION</span></h1>
+            <p>Plongez dans l'univers UG13S. Une expérience immersive gérée par des passionnés.</p>
+            <div class="hero-btns">
+                <a href="#equipe" class="btn-primary">Découvrir l'équipe</a>
+                <a href="https://discord.gg/votrelien" class="btn-secondary">Rejoindre le Discord</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="metiers" class="section-container">
+        <h2 class="section-title">NOS <span>MÉTIERS</span></h2>
+        <div id="jobs-display" class="grid-layout"></div>
+    </section>
+
+    <section id="equipe" class="section-container">
+        <h2 class="section-title">ÉQUIPE <span>UG13S</span></h2>
+        <div id="team-display" class="grid-layout"></div>
+    </section>
+
+    <script type="module" src="script.js"></script>
 </body>
 </html>
