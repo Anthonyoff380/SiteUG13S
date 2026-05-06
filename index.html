@@ -2,53 +2,18 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UG13S | Simulation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
+    <title>Connexion Admin | UG13S</title>
 </head>
-<body id="main-body">
-
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">UG13S<span>.</span></div>
-            <div class="nav-links">
-                <a href="index.html">Accueil</a>
-                <a href="#metiers">Métiers</a>
-                <a href="#equipe">L'Équipe</a>
-                <a href="admin.html" class="admin-icon">⚙️</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- La Hero section recevra l'image de fond via Firebase -->
-    <section class="hero" id="hero-bg">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <span class="badge">Simulation Immersive</span>
-            <h1>L'EXCELLENCE DE LA <br><span class="gradient-text">SIMULATION</span></h1>
-            <p id="hero-desc">Bienvenue sur le portail officiel de l'UG13S.</p>
-        </div>
-    </section>
-
-    <!-- SECTION MÉTIERS -->
-    <section id="metiers" class="content-section">
-        <div class="section-header">
-            <h2>NOS <span>MÉTIERS</span></h2>
-            <p>Découvrez les rôles disponibles en jeu</p>
-        </div>
-        <div id="jobs-grid" class="grid-container"></div>
-    </section>
-
-    <!-- SECTION ÉQUIPE -->
-    <section id="equipe" class="content-section">
-        <div class="section-header">
-            <h2>L'ÉQUIPE <span>UG13S</span></h2>
-            <p>Le staff à votre écoute</p>
-        </div>
-        <div id="team-grid" class="grid-container"></div>
-    </section>
-
-    <script type="module" src="script.js"></script>
+<body class="login-page">
+    <div class="login-card">
+        <h2>ACCÈS <span>RESTREINT</span></h2>
+        <input type="email" id="email" placeholder="Email Admin">
+        <input type="password" id="password" placeholder="Mot de passe">
+        <button id="login-btn">Se connecter</button>
+        <p id="error-msg" style="color: red; font-size: 0.8rem; margin-top: 10px;"></p>
+    </div>
+    <script type="module" src="auth.js"></script>
 </body>
 </html>

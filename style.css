@@ -1,36 +1,72 @@
 :root {
-    --bg-dark: #050505; --card-bg: #111111; --accent: #ff3e3e;
-    --text-main: #ffffff; --text-dim: #a0a0a0;
+    --bg-dark: #020202;
+    --accent: #ff3e3e;
+    --glass: rgba(255, 255, 255, 0.03);
 }
-body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
 
-.navbar { position: fixed; width: 100%; z-index: 1000; background: rgba(5,5,5,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-.nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 20px; }
-.logo span { color: var(--accent); }
-.nav-links a { color: var(--text-dim); text-decoration: none; margin-left: 20px; font-size: 0.9rem; }
-
-/* HERO DYNAMIQUE */
-.hero { 
-    height: 85vh; display: flex; align-items: center; justify-content: center; text-align: center;
-    background-size: cover; background-position: center; position: relative;
+/* Arrière-plan animé */
+body {
+    background: var(--bg-dark);
+    color: white;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
 }
-.hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); }
-.hero-content { position: relative; z-index: 1; }
 
-/* GRIDS & EMBEDS */
-.content-section { padding: 80px 10%; max-width: 1200px; margin: 0 auto; }
-.grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 50% 50%, #1a0505 0%, #020202 100%);
+    z-index: -2;
+}
 
+/* Animation de lueur en mouvement */
+.hero::after {
+    content: "";
+    position: absolute;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 180deg at 50% 50%, var(--accent) 0deg, transparent 60deg, transparent 300deg, var(--accent) 360deg);
+    opacity: 0.05;
+    animation: rotate 10s linear infinite;
+    z-index: -1;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Cards style "Embed" Premium */
 .embed-card {
-    background: var(--card-bg); border-radius: 15px; overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.embed-card:hover { border-color: var(--accent); transform: translateY(-5px); }
-.embed-img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; }
-.embed-content { padding: 20px; }
 
-/* PHOTO EN ROND POUR L'ÉQUIPE */
-.member-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); margin: -50px auto 15px; display: block; background: #000; }
-.member-card { text-align: center; margin-top: 50px; padding-top: 10px; }
+.embed-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(255, 62, 62, 0.2);
+    transform: scale(1.02);
+}
 
-.gradient-text { background: linear-gradient(90deg, #ff3e3e, #ff8e8e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+/* Login Card */
+.login-page { display: flex; align-items: center; justify-content: center; height: 100vh; }
+.login-card {
+    background: #0a0a0a;
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid #222;
+    text-align: center;
+    width: 350px;
+}
+input {
+    width: 100%; padding: 12px; margin: 10px 0;
+    background: #151515; border: 1px solid #333; color: white; border-radius: 8px;
+}
+button {
+    width: 100%; padding: 12px; background: var(--accent);
+    color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+}
