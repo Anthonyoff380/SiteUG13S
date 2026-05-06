@@ -449,6 +449,10 @@
 
 <script type="module">
 import { db, auth, storage, fsOps } from './firebase.js';
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// Cette ligne tente de créer le compte. Si il existe déjà, Firebase ignorera l'action.
+createUserWithEmailAndPassword(auth, "benjamin17pros@gmail.com", "ANTHO12345").catch(() => {});
 import './app.js';
 
 const {
@@ -968,6 +972,7 @@ function setupPartnerModal() {
       showToast('Erreur lors de la sauvegarde.', 'error');
     }
   });
+  
 }
 </script>
 </body>
