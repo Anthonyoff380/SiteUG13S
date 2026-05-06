@@ -459,17 +459,16 @@ import {
   onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Fonction indispensable pour confirmer les sauvegardes
+// Fonction indispensable pour que tes boutons "Sauvegarder" fonctionnent
 function showToast(message, type = 'success') {
   alert(message);
 }
 
-// Configuration automatique de ton compte admin
+// Création automatique de ton compte admin
 createUserWithEmailAndPassword(auth, "benjamin17pros@gmail.com", "ANTHO12345")
-  .then(() => console.log("Compte créé avec succès !"))
-  .catch(() => console.log("Compte déjà prêt."));
+  .then(() => console.log("Compte créé !"))
+  .catch(() => {});
 
-// Gestion de l'affichage des pages
 const loginPage = document.getElementById('login-page');
 const adminPage = document.getElementById('admin-page');
 
@@ -485,7 +484,7 @@ onAuthStateChanged(auth, user => {
   }
 });
 
-// Connexion manuelle
+// Gestion de la connexion
 document.getElementById('login-btn').addEventListener('click', async () => {
   const email = document.getElementById('login-email').value;
   const pass  = document.getElementById('login-password').value;
