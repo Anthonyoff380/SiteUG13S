@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Équipe UG13S</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Exo+2:ital,wght@0,300;0,400;0,700;1,300&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <div class="bubbles-bg" id="bubblesContainer"></div>
+  <div class="overlay-grid"></div>
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><span class="logo-bracket">[</span>UG13S<span class="logo-bracket">]</span></a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Accueil</a></li>
+        <li><a href="equipe.html" class="active">Équipe</a></li>
+        <li><a href="reseaux.html">Réseaux</a></li>
+        <li><a href="infos.html">Infos Jeu</a></li>
+        <li><a href="galerie.html">Galerie</a></li>
+      </ul>
+      <a href="../admin/login.html" class="portal-btn" title="Portail Admin">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <span class="page-tag">// UG13S</span>
+    <h1>Notre <em>Équipe</em></h1>
+    <p>Découvrez les membres qui font vivre le serveur UG13S — leurs rôles, leurs profils et ce qui les définit.</p>
+  </div>
+
+  <div class="section-container">
+    <div class="section-label">// Membres du serveur</div>
+    <div class="team-grid" id="teamGrid">
+      <div style="color:var(--text-muted);padding:2rem;grid-column:1/-1;text-align:center;">
+        Chargement des membres...
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-logo">[UG13S]</span>
+      <p>© 2025 UG13S — Jeu de Simulation. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script src="../js/bubbles.js"></script>
+  <script src="../js/main.js"></script>
+  <script type="module">
+    import { db } from '../js/firebase-config.js';
+    import { collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    async function loadTeam() {
+      const grid = document.getElementById('teamGrid');
+      try {
+        const q = query(collection(db, 'members'), orderBy('createdAt', 'asc'));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          grid.innerHTML = '<div style="color:var(--text-muted);padding:2rem;grid-column:1/-1;text-align:center;">Aucun membre pour le moment.</div>';
+          return;
+        }
+
+        grid.innerHTML = '';
+        snap.forEach(doc => {
+          const m = doc.data();
+          const card = document.createElement('div');
+          card.className = 'member-card';
+          card.innerHTML = `
+            ${m.photoURL
+              ? `<img class="member-avatar" src="${m.photoURL}" alt="${m.prenom} ${m.nom}" />`
+              : `<div class="member-avatar-placeholder">👤</div>`
+            }
+            <div class="member-name">${m.prenom || ''} ${m.nom || ''}</div>
+            <div class="member-role">${m.role || 'Membre'}</div>
+            ${m.info ? `<div class="member-info">${m.info}</div>` : ''}
+          `;
+          grid.appendChild(card);
+        });
+      } catch(e) {
+        grid.innerHTML = `<div style="color:#ff6b6b;padding:2rem;grid-column:1/-1;text-align:center;">Erreur de chargement. Vérifiez la config Firebase.</div>`;
+        console.error(e);
+      }
+    }
+
+    loadTeam();
+  </script>
+</body>
+</html>
