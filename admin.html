@@ -199,6 +199,7 @@
 
       <div class="admin-sidebar-title">Apparence</div>
       <button class="admin-nav-item" data-section="footer-config">📝 Footer</button>
+      <button class="admin-nav-item" data-section="recrutement">📋 Recrutement</button>
     </aside>
 
     <!-- Main content -->
@@ -280,6 +281,46 @@
       </section>
 
       <!-- FOOTER CONFIG -->
+
+      <section class="admin-section" id="section-recrutement">
+        <div class="admin-section-title">📋 Gestion du Recrutement</div>
+
+        <!-- Config webhook Discord -->
+        <div class="admin-card" style="margin-bottom:1.5rem">
+          <div class="admin-card-title">⚙️ Configuration Discord</div>
+          <div class="form-group">
+            <label class="form-label">Webhook Discord</label>
+            <input type="text" id="recru-webhook" class="form-input" placeholder="https://discord.com/api/webhooks/..."/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ID du rôle à mentionner (ex: 123456789)</label>
+            <input type="text" id="recru-role-id" class="form-input" placeholder="ID du rôle Discord"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message personnalisé (optionnel)</label>
+            <input type="text" id="recru-message" class="form-input" placeholder="Nouvelle candidature reçue !"/>
+          </div>
+          <button class="btn btn-primary" id="save-recru-config">💾 Sauvegarder config Discord</button>
+        </div>
+
+        <!-- Builder de formulaire -->
+        <div class="admin-card" style="margin-bottom:1.5rem">
+          <div class="admin-card-title">📝 Champs du formulaire</div>
+          <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1rem">Ajoutez les champs qui apparaîtront dans le formulaire public de recrutement.</p>
+          <div id="recru-fields-list" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem"></div>
+          <button class="btn btn-outline" id="add-recru-field-btn">➕ Ajouter un champ</button>
+          <button class="btn btn-primary" id="save-recru-fields" style="margin-left:0.5rem">💾 Sauvegarder les champs</button>
+        </div>
+
+        <!-- Candidatures reçues -->
+        <div class="admin-card">
+          <div class="admin-card-title" style="display:flex;align-items:center;justify-content:space-between">
+            <span>📥 Candidatures reçues</span>
+            <span id="recru-count" style="font-size:0.85rem;color:var(--text-muted)"></span>
+          </div>
+          <div id="recru-candidatures-list"></div>
+        </div>
+      </section>
       <section class="admin-section" id="section-footer-config">
         <div class="admin-section-title">📝 Configuration du footer</div>
         <div class="card">
@@ -626,6 +667,8 @@ async function initAdmin() {
   setupMetierModal();
   setupPartnerModal();
   loadFooterConfig();
+  loadRecrutementConfig();
+  setupRecrutement();
 }
 
 // ── DASHBOARD ──
@@ -639,6 +682,9 @@ async function loadDashboard() {
     document.getElementById('dash-team').textContent     = teamSnap.size;
     document.getElementById('dash-metiers').textContent  = metSnap.size;
     document.getElementById('dash-partners').textContent = parSnap.size;
+    const recruSnap = await getDocs(collection(db, 'candidatures'));
+    const dashRecru = document.getElementById('dash-recru');
+    if (dashRecru) dashRecru.textContent = recruSnap.size;
   } catch(e) {}
 }
 
@@ -1006,6 +1052,126 @@ function setupPartnerModal() {
     }
   });
 }
+
+// ════════════════════════════════════════
+//  RECRUTEMENT
+// ════════════════════════════════════════
+let recruFields = [];
+
+async function loadRecrutementConfig() {
+  try {
+    const snap = await getDoc(doc(db, 'config', 'recrutement'));
+    if (!snap.exists()) return;
+    const d = snap.data();
+    document.getElementById('recru-webhook').value  = d.webhook  || '';
+    document.getElementById('recru-role-id').value  = d.roleId   || '';
+    document.getElementById('recru-message').value  = d.message  || '';
+    recruFields = d.fields || [];
+    renderRecruFields();
+  } catch(e) { console.error(e); }
+}
+
+function renderRecruFields() {
+  const list = document.getElementById('recru-fields-list');
+  list.innerHTML = '';
+  recruFields.forEach((field, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:0.5rem;align-items:center;background:var(--bg-panel);padding:0.6rem 0.8rem;border-radius:8px;border:1px solid var(--border)';
+    row.innerHTML = `
+      <input type="text" value="${field.label}" placeholder="Label du champ" class="form-input" style="flex:2" data-idx="${i}" data-key="label"/>
+      <select class="form-input" style="flex:1" data-idx="${i}" data-key="type">
+        <option value="text" ${field.type==='text'?'selected':''}>Texte court</option>
+        <option value="textarea" ${field.type==='textarea'?'selected':''}>Texte long</option>
+        <option value="number" ${field.type==='number'?'selected':''}>Nombre</option>
+        <option value="select" ${field.type==='select'?'selected':''}>Liste déroulante</option>
+      </select>
+      <label style="display:flex;align-items:center;gap:4px;font-size:0.8rem;color:var(--text-muted);white-space:nowrap">
+        <input type="checkbox" ${field.required?'checked':''} data-idx="${i}" data-key="required"/> Requis
+      </label>
+      <button class="btn btn-danger btn-sm" data-remove="${i}">🗑️</button>
+    `;
+    row.querySelectorAll('[data-idx]').forEach(el => {
+      el.addEventListener('change', e => {
+        const idx = parseInt(e.target.dataset.idx);
+        const key = e.target.dataset.key;
+        recruFields[idx][key] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+      });
+    });
+    row.querySelector('[data-remove]').addEventListener('click', e => {
+      recruFields.splice(parseInt(e.target.dataset.remove), 1);
+      renderRecruFields();
+    });
+    list.appendChild(row);
+  });
+}
+
+function setupRecrutement() {
+  document.getElementById('add-recru-field-btn').addEventListener('click', () => {
+    recruFields.push({ label: '', type: 'text', required: false });
+    renderRecruFields();
+  });
+
+  document.getElementById('save-recru-config').addEventListener('click', async () => {
+    try {
+      await setDoc(doc(db, 'config', 'recrutement'), {
+        webhook: document.getElementById('recru-webhook').value,
+        roleId:  document.getElementById('recru-role-id').value,
+        message: document.getElementById('recru-message').value,
+        fields:  recruFields,
+      }, { merge: true });
+      showToast('Config Discord sauvegardée !', 'success');
+    } catch(e) { showToast('Erreur sauvegarde.', 'error'); console.error(e); }
+  });
+
+  document.getElementById('save-recru-fields').addEventListener('click', async () => {
+    try {
+      await setDoc(doc(db, 'config', 'recrutement'), { fields: recruFields }, { merge: true });
+      showToast('Champs sauvegardés !', 'success');
+    } catch(e) { showToast('Erreur sauvegarde.', 'error'); console.error(e); }
+  });
+
+  loadCandidatures();
+}
+
+async function loadCandidatures() {
+  try {
+    const snap = await getDocs(collection(db, 'candidatures'));
+    const list = document.getElementById('recru-candidatures-list');
+    document.getElementById('recru-count').textContent = `${snap.size} candidature(s)`;
+    if (snap.empty) { list.innerHTML = '<p style="color:var(--text-muted)">Aucune candidature pour le moment.</p>'; return; }
+    const items = [];
+    snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+    items.sort((a,b) => (b.createdAt||0)-(a.createdAt||0));
+    list.innerHTML = '';
+    items.forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'admin-item';
+      el.style.cssText = 'flex-direction:column;align-items:flex-start;gap:0.5rem';
+      const date = c.createdAt ? new Date(c.createdAt).toLocaleString('fr-FR') : '—';
+      let fields = '';
+      if (c.reponses) {
+        Object.entries(c.reponses).forEach(([k,v]) => {
+          fields += `<div style="font-size:0.82rem"><span style="color:var(--text-muted)">${k} :</span> <span style="color:var(--text)">${v}</span></div>`;
+        });
+      }
+      el.innerHTML = `
+        <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
+          <div class="admin-item-name">Candidature du ${date}</div>
+          <button class="btn btn-danger btn-sm" data-delete="${c.id}">🗑️</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px;width:100%">${fields}</div>
+      `;
+      el.querySelector('[data-delete]').addEventListener('click', async () => {
+        if (!confirm('Supprimer cette candidature ?')) return;
+        await deleteDoc(doc(db, 'candidatures', c.id));
+        showToast('Candidature supprimée.', 'success');
+        loadCandidatures();
+      });
+      list.appendChild(el);
+    });
+  } catch(e) { console.error(e); }
+}
+
 </script>
 </body>
 </html>
