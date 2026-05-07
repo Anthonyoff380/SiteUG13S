@@ -448,21 +448,15 @@
 </div>
 
 <script type="module">
-// On importe directement depuis Firebase au lieu de passer par fsOps qui bug
+// On utilise les liens directs officiels pour éviter les erreurs de modules locaux
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-  getAuth, 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword, 
-  signOut 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { 
-  getFirestore, 
-  collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { 
-  getStorage, ref, uploadBytes, getDownloadURL 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+// Import de ta config existante
+import { app, db, auth, storage } from './firebase.js';
+import './app.js';
 
 onAuthStateChanged(auth, async user => {
   if (user) {
@@ -473,12 +467,13 @@ onAuthStateChanged(auth, async user => {
   } else {
     // TENTATIVE DE CONNEXION AUTO
     try {
-      await signInWithEmailAndPassword(auth, 'benajmin17pros@gmail.com', 'ANTHO123');
+      // METS TES VRAIS IDENTIFIANTS ICI :
+      await signInWithEmailAndPassword(auth, 'admin@u13.fr', 'tonMotDePasse');
     } catch(e) {
-      // Si ça rate, on reste sur le login
+      // Si ça échoue (mauvais MDP), on affiche l'écran normal
       loginPage.style.display = 'block';
       adminPage.style.display = 'none';
-      console.log("Auto-login impossible :", e.message);
+      console.log("Erreur auto-login:", e.message);
     }
   }
 });
