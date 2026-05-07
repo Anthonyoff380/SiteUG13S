@@ -461,15 +461,21 @@ const {
 const loginPage = document.getElementById('login-page');
 const adminPage = document.getElementById('admin-page');
 
-onAuthStateChanged(auth, user => {
+onAuthStateChanged(auth, async user => {
   if (user) {
     loginPage.style.display = 'none';
     adminPage.style.display = 'block';
     document.getElementById('admin-email-display').textContent = user.email;
     initAdmin();
   } else {
-    loginPage.style.display = 'block';
-    adminPage.style.display = 'none';
+    // Tente une connexion automatique si personne n'est connecté
+    try {
+      await signInWithEmailAndPassword(auth, 'admin@u13.fr', 'tonMotDePasse');
+    } catch(e) {
+      // Si l'auto-connexion échoue, on affiche la page de login normale
+      loginPage.style.display = 'block';
+      adminPage.style.display = 'none';
+    }
   }
 });
 
