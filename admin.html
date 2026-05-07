@@ -452,7 +452,6 @@
 import { app, db, auth, storage } from './firebase.js';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 // ── AUTH & CONNEXION AUTO ──
 const loginPage = document.getElementById('login-page');
@@ -506,11 +505,14 @@ document.querySelectorAll('.admin-nav-item').forEach(btn => {
   });
 });
 
-// ── UPLOAD HELPER ──
-async function uploadFile(file, path) {
-  const storageRef = ref(storage, path);
-  await uploadBytes(storageRef, file);
-  return await getDownloadURL(storageRef);
+// ── UPLOAD HELPER (base64 → Firestore, zéro Storage/CORS) ──
+async function uploadFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 // ── FILE PREVIEW HELPER ──
@@ -634,7 +636,7 @@ function setupSiteConfigSave() {
     try {
       let logoUrl = document.getElementById('cfg-logo-url').value;
       const file  = document.getElementById('cfg-logo-file').files[0];
-      if (file) logoUrl = await uploadFile(file, `site/logo_${Date.now()}_${file.name}`);
+      if (file) logoUrl = await uploadFile(file);
 
       await setDoc(doc(db, 'config', 'site'), {
         siteName:     document.getElementById('cfg-siteName').value,
@@ -754,7 +756,7 @@ function setupTeamModal() {
     try {
       let avatarUrl = document.getElementById('team-avatar-url').value;
       const file    = document.getElementById('team-avatar-file').files[0];
-      if (file) avatarUrl = await uploadFile(file, `team/${Date.now()}_${file.name}`);
+      if (file) avatarUrl = await uploadFile(file);
 
       const data = {
         prenom, nom,
@@ -853,7 +855,7 @@ function setupMetierModal() {
     try {
       let imageUrl = document.getElementById('metier-img-url').value;
       const file   = document.getElementById('metier-img-file').files[0];
-      if (file) imageUrl = await uploadFile(file, `metiers/${Date.now()}_${file.name}`);
+      if (file) imageUrl = await uploadFile(file);
 
       const data = {
         nom,
@@ -949,7 +951,7 @@ function setupPartnerModal() {
     try {
       let logoUrl = document.getElementById('partner-logo-url').value;
       const file  = document.getElementById('partner-logo-file').files[0];
-      if (file) logoUrl = await uploadFile(file, `partenaires/${Date.now()}_${file.name}`);
+      if (file) logoUrl = await uploadFile(file);
 
       const data = {
         nom,
