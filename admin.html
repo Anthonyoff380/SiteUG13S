@@ -128,6 +128,10 @@
       opacity: 0.6;
     }
     .tag-chip button:hover { opacity: 1; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
     @media (max-width: 768px) {
       .form-row { grid-template-columns: 1fr; }
       .admin-sidebar { display: none; }
@@ -513,6 +517,33 @@ async function uploadFile(file) {
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+}
+
+
+// ── TOAST NOTIFICATIONS ──
+function showToast(message, type = 'success') {
+  const existing = document.getElementById('admin-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'admin-toast';
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 9999;
+    padding: 0.85rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    background: ${type === 'success' ? '#1b5e20' : '#b71c1c'};
+    border: 1px solid ${type === 'success' ? '#2e7d32' : '#c62828'};
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    animation: fadeInUp 0.25s ease;
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3500);
 }
 
 // ── FILE PREVIEW HELPER ──
