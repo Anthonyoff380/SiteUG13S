@@ -14,7 +14,6 @@ import {
 window.db = db;
 window.auth = auth;
 window.storage = storage;
-window.fsOps = { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, ref, uploadBytes, getDownloadURL, deleteObject, signInWithEmailAndPassword, signOut, onAuthStateChanged };
 
 // ================================================
 //  NAVBAR

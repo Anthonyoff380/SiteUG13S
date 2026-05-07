@@ -90,9 +90,8 @@
 
 <script type="module">
 import { db } from './firebase.js';
+import { collection, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import './app.js';
-
-const { collection, getDocs, getDoc, doc } = fsOps;
 
 async function loadTeam() {
   try {
