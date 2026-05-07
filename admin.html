@@ -448,18 +448,21 @@
 </div>
 
 <script type="module">
-import { db, auth, storage, fsOps } from './firebase.js';
-import './app.js';
-
-const {
-  collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
-  onAuthStateChanged, signInWithEmailAndPassword, signOut,
-  ref, uploadBytes, getDownloadURL
-} = fsOps;
-
-// ── AUTH ──
-const loginPage = document.getElementById('login-page');
-const adminPage = document.getElementById('admin-page');
+// On importe directement depuis Firebase au lieu de passer par fsOps qui bug
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signInWithEmailAndPassword, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { 
+  getFirestore, 
+  collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+  getStorage, ref, uploadBytes, getDownloadURL 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 onAuthStateChanged(auth, async user => {
   if (user) {
@@ -468,16 +471,25 @@ onAuthStateChanged(auth, async user => {
     document.getElementById('admin-email-display').textContent = user.email;
     initAdmin();
   } else {
-    // Tente une connexion automatique si personne n'est connecté
+    // TENTATIVE DE CONNEXION AUTO
     try {
-      await signInWithEmailAndPassword(auth, 'benjamin17pros@gmail.com', 'ANTHO12345');
+      await signInWithEmailAndPassword(auth, 'benajmin17pros@gmail.com', 'ANTHO123');
     } catch(e) {
-      // Si l'auto-connexion échoue, on affiche la page de login normale
+      // Si ça rate, on reste sur le login
       loginPage.style.display = 'block';
       adminPage.style.display = 'none';
+      console.log("Auto-login impossible :", e.message);
     }
   }
 });
+
+// Import de ta config (assure-toi que firebase.js exporte bien 'app', 'auth', 'db' et 'storage')
+import { app, db, auth, storage } from './firebase.js';
+import './app.js';
+
+// ── AUTH ──
+const loginPage = document.getElementById('login-page');
+const adminPage = document.getElementById('admin-page');
 
 document.getElementById('login-btn').addEventListener('click', async () => {
   const email = document.getElementById('login-email').value;
