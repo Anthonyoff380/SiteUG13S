@@ -46,8 +46,7 @@
         Serveur FiveM • Roleplay
       </div>
 
-      <img src="assets/logo.png" alt="Urgence 13 Logo" class="hero-logo" style="display:none" onerror="this.style.display='none'"/>
-      <div class="hero-logo-placeholder" id="hero-logo-placeholder">🚨</div>
+      <div id="hero-logo-wrap" style="display:none;margin-bottom:2rem"><img id="hero-logo-img" src="" alt="Logo" style="width:100px;height:100px;object-fit:contain"/></div>
 
       <h1>Urgence 13 <span class="highlight">Simulations</span></h1>
       <p class="hero-subtitle" id="hero-subtitle">
@@ -265,7 +264,11 @@ async function loadSiteConfig() {
     document.getElementById('footer-discord-col').href = discordUrl;
 
     if (cfg.heroSubtitle) document.getElementById('hero-subtitle').textContent = cfg.heroSubtitle;
-    if (cfg.logo) document.getElementById('hero-logo-placeholder').style.display = 'none';
+    if (cfg.logo) {
+      const wrap = document.getElementById('hero-logo-wrap');
+      const img  = document.getElementById('hero-logo-img');
+      if (wrap && img) { img.src = cfg.logo; wrap.style.display = 'block'; }
+    }
 
     // Stats
     if (cfg.statMembers)  document.getElementById('stat-members').textContent  = cfg.statMembers;
