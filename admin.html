@@ -1157,6 +1157,16 @@ function setupRecrutement() {
 
   document.getElementById('save-recru-fields').addEventListener('click', async () => {
     try {
+      // Lire les valeurs directement depuis le DOM (évite les bugs d'events)
+      const rows = document.querySelectorAll('#recru-fields-list > div');
+      const fields = [];
+      rows.forEach(row => {
+        const label    = row.querySelector('[data-key="label"]')?.value?.trim() || '';
+        const type     = row.querySelector('[data-key="type"]')?.value || 'text';
+        const required = row.querySelector('[data-key="required"]')?.checked || false;
+        if (label) fields.push({ label, type, required });
+      });
+      recruFields = fields;
       await setDoc(doc(db, 'config', 'recrutement'), { fields: recruFields }, { merge: true });
       showToast('Champs sauvegardés !', 'success');
     } catch(e) { showToast('Erreur sauvegarde.', 'error'); console.error(e); }
