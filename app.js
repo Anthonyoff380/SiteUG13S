@@ -92,7 +92,6 @@ async function loadFooter() {
     const discordLink = document.getElementById('footer-discord-link');
     const discordBtn  = document.getElementById('footer-discord-btn');
 
-    if (logoEl && cfg.logo) { logoEl.src = cfg.logo; logoEl.style.display = 'block'; logoEl.nextElementSibling?.remove(); }
     if (nameEl) nameEl.innerHTML = cfg.siteName
       ? cfg.siteName.replace(' ', ' <span>') + '</span>'
       : 'Urgence 13 <span>Simulations</span>';
