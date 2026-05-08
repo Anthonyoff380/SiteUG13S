@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Métiers — Urgence 13 Simulations</title>
+  <title>Portfolio — Urgence 13 Simulations</title>
   <link rel="icon" href="assets/favicon.ico"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
@@ -19,27 +19,34 @@
   <ul class="nav-links">
     <li><a href="index.html">Accueil</a></li>
     <li><a href="equipe.html">Équipe</a></li>
-    <li><a href="metiers.html" class="active">Métiers</a></li>
+    <li><a href="metiers.html">Métiers</a></li>
     <li><a href="partenariat.html">Partenariats</a></li>
-    <li><a href="portfolio.html">Portfolio</a></li>
+    <li><a href="portfolio.html" class="active">Portfolio</a></li>
     <li><a href="recrutement.html">Recrutement</a></li>
     <li><a href="#" id="nav-discord-link" class="nav-discord">Discord</a></li>
   </ul>
 </nav>
 <div class="page-content">
   <div class="page-header">
-    <div class="section-badge">Corps de métier</div>
-    <h1>Nos <span>Métiers</span></h1>
-    <p>Choisissez votre vocation parmi les corps de métier disponibles sur le serveur.</p>
+    <div class="section-badge">Galerie</div>
+    <h1>Notre <span>Portfolio</span></h1>
+    <p>Découvrez le serveur en images — captures d'écran et moments forts du gameplay.</p>
   </div>
   <section>
     <div class="container">
-      <div id="metiers-grid" class="grid-3">
-        <div class="empty-state"><div class="icon">⏳</div><p>Chargement des métiers…</p></div>
+      <div id="portfolio-grid" class="portfolio-grid">
+        <div class="empty-state" style="grid-column:1/-1"><div class="icon">⏳</div><p>Chargement des photos...</p></div>
       </div>
     </div>
   </section>
 </div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">✕</button>
+  <img id="lightbox-img" src="" alt=""/>
+</div>
+
 <footer>
   <div class="footer-top container">
     <div class="footer-brand">
@@ -69,50 +76,55 @@
   </div>
 </footer>
 <button class="scroll-top">↑</button>
+
 <script type="module">
 import { db } from './firebase.js';
 import { collection, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import './app.js';
 
-async function loadMetiers() {
+async function loadPortfolio() {
   try {
-    const snap = await getDocs(collection(db, 'metiers'));
-    const grid = document.getElementById('metiers-grid');
+    const snap = await getDocs(collection(db, 'portfolio'));
+    const grid = document.getElementById('portfolio-grid');
     if (snap.empty) {
-      grid.innerHTML = '<div class="empty-state"><div class="icon">🚨</div><p>Aucun métier disponible pour l\'instant.</p></div>';
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">📷</div><p>Aucune photo pour le moment. Revenez bientôt !</p></div>';
       return;
     }
     const items = [];
     snap.forEach(d => items.push({ id: d.id, ...d.data() }));
-    items.sort((a,b) => (a.ordre||99)-(b.ordre||99));
+    items.sort((a,b) => (b.createdAt||0)-(a.createdAt||0));
     grid.innerHTML = '';
-    items.forEach(m => {
-      // Normalize services: can be array or comma-separated string
-      let services = [];
-      if (Array.isArray(m.services)) services = m.services.filter(Boolean);
-      else if (typeof m.services === 'string' && m.services.trim()) services = m.services.split(',').map(s=>s.trim()).filter(Boolean);
-
+    items.forEach(item => {
       const el = document.createElement('div');
-      el.className = 'card metier-card fade-in';
+      el.className = 'portfolio-item fade-in';
       el.innerHTML = `
-        <div class="metier-img-wrap">
-          ${m.imageUrl
-            ? `<img src="${m.imageUrl}" alt="${m.nom}" class="metier-img"/>`
-            : `<div class="metier-img-placeholder">${m.emoji || '🚒'}</div>`}
+        <img src="${item.imageUrl}" alt="${item.caption||'Photo du serveur'}" loading="lazy"/>
+        <div class="portfolio-item-overlay">
+          ${item.caption ? `<div class="portfolio-item-caption">${item.caption}</div>` : ''}
         </div>
-        <div class="metier-name">${m.nom || 'Métier'}</div>
-        ${m.description ? `<p class="metier-desc">${m.description}</p>` : ''}
-        ${services.length ? `<div class="metier-services">${services.map(s=>`<span class="metier-service-tag">${s}</span>`).join('')}</div>` : ''}
-        ${m.discordUrl ? `<a href="${m.discordUrl}" target="_blank" rel="noopener" class="btn btn-discord btn-sm" style="margin-top:auto">Discord du corps</a>` : ''}
       `;
+      el.addEventListener('click', () => openLightbox(item.imageUrl));
       grid.appendChild(el);
     });
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.05 });
     grid.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
   } catch(e) { console.error(e); }
 }
+
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+document.getElementById('lightbox').addEventListener('click', e => { if (e.target === e.currentTarget) closeLightbox(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
 async function loadDiscord() {
   try {
@@ -124,7 +136,7 @@ async function loadDiscord() {
   } catch(e) {}
 }
 
-loadMetiers(); loadDiscord();
+loadPortfolio(); loadDiscord();
 </script>
 </body>
 </html>

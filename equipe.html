@@ -8,10 +8,7 @@
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-
 <div class="bubbles-container" aria-hidden="true"></div>
-
-<!-- NAVBAR -->
 <nav class="navbar">
   <a href="index.html" class="nav-brand">
     <img src="assets/logo.png" alt="Logo" class="nav-logo" style="display:none" onerror="this.style.display='none'"/>
@@ -20,135 +17,140 @@
   </a>
   <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
   <ul class="nav-links">
-    <li><a href="index.html">🏠 Accueil</a></li>
-    <li><a href="equipe.html" class="active">👥 Équipe</a></li>
-    <li><a href="metiers.html">🚨 Métiers</a></li>
-    <li><a href="partenariat.html">🤝 Partenariats</a></li>
-    <li><a href="recrutement.html">📋 Recrutement</a></li>
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="equipe.html" class="active">Équipe</a></li>
+    <li><a href="metiers.html">Métiers</a></li>
+    <li><a href="partenariat.html">Partenariats</a></li>
+    <li><a href="portfolio.html">Portfolio</a></li>
+    <li><a href="recrutement.html">Recrutement</a></li>
     <li><a href="#" id="nav-discord-link" class="nav-discord">Discord</a></li>
   </ul>
 </nav>
-
 <div class="page-content">
-
-  <!-- Page Header -->
   <div class="page-header">
-    <div class="hero-badge"><span class="dot"></span>Administration</div>
+    <div class="section-badge">Administration</div>
     <h1>Notre <span>Équipe</span></h1>
-    <p>Rencontrez les personnes qui font vivre Urgence 13 Simulations au quotidien.</p>
+    <p>Les personnes qui font vivre Urgence 13 Simulations au quotidien.</p>
   </div>
-
-  <!-- Équipe Grid -->
   <section>
     <div class="container">
-      <div id="team-grid" class="grid-4">
-        <div class="empty-state"><div class="icon">⏳</div><p>Chargement de l'équipe…</p></div>
+      <div id="team-container">
+        <div class="empty-state"><div class="icon">⏳</div><p>Chargement...</p></div>
       </div>
     </div>
   </section>
-
 </div>
-
-<!-- FOOTER -->
 <footer>
-  <div class="footer-grid">
-    <div>
-      <img src="assets/logo.png" id="footer-logo" alt="Logo" class="footer-brand-logo" style="display:none" onerror="this.style.display='none'"/>
-      <div class="footer-brand-name" id="footer-name">Urgence 13 <span>Simulations</span></div>
+  <div class="footer-top container">
+    <div class="footer-brand">
+      <h3 id="footer-name">Urgence 13 <span>Simulations</span></h3>
       <p class="footer-desc" id="footer-desc">Serveur FiveM de simulation d'urgence réaliste.</p>
-      <div class="footer-socials">
-        <a href="#" id="footer-discord-link" class="footer-social-btn" title="Discord">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-        </a>
-      </div>
+      <a href="#" id="footer-discord-btn" class="discord-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+        Discord
+      </a>
     </div>
-    <div class="footer-col">
+    <div class="footer-links">
       <h4>Navigation</h4>
       <ul>
         <li><a href="index.html">Accueil</a></li>
         <li><a href="equipe.html">Équipe</a></li>
         <li><a href="metiers.html">Métiers</a></li>
         <li><a href="partenariat.html">Partenariats</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="recrutement.html">Recrutement</a></li>
       </ul>
     </div>
-    <div class="footer-col"><h4>Liens utiles</h4><ul><li><a href="#" id="footer-discord-col">Discord</a></li></ul></div>
-    <div class="footer-col"></div>
+    <div class="footer-discord">
+      <h4>Liens utiles</h4>
+      <ul class="footer-links"><li><a href="#" id="footer-discord-link">Discord</a></li><li><a href="admin.html">Admin</a></li></ul>
+    </div>
   </div>
-  <div class="footer-bottom">
-    <div class="footer-copyright">
-      <span id="footer-copyright">© 2025 Urgence 13 Simulations. Tous droits réservés.</span>
-      &nbsp;—&nbsp; <span id="footer-dev"></span>
-    </div>
-    <div class="footer-bottom-links">
-      <a href="#">Mentions légales</a>
-      <a href="#">Règlement</a>
-    </div>
+  <div class="footer-bottom container">
+    <p id="footer-copyright">© 2025 Urgence 13 Simulations. Tous droits réservés.</p>
+    <p id="footer-dev"></p>
   </div>
 </footer>
-
 <button class="scroll-top">↑</button>
-
 <script type="module">
 import { db } from './firebase.js';
 import { collection, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import './app.js';
 
+const POLES = [
+  { key: 'direction', label: '🎖️ Direction', roles: ['directeur','direction','co-directeur','co-fondateur','fondateur','président','vice-président'] },
+  { key: 'staff',     label: '⚙️ Staff',     roles: ['staff','modérateur','moderateur','responsable','admin','administrateur'] },
+  { key: 'autres',    label: '🛠️ Pôles Techniques', roles: [] },
+];
+
+function getPole(role) {
+  const r = (role || '').toLowerCase();
+  for (const pole of POLES) {
+    if (pole.key === 'autres') continue;
+    if (pole.roles.some(k => r.includes(k))) return pole.key;
+  }
+  return 'autres';
+}
+
 async function loadTeam() {
   try {
     const snap = await getDocs(collection(db, 'team'));
-    const grid = document.getElementById('team-grid');
-
+    const container = document.getElementById('team-container');
     if (snap.empty) {
-      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">👥</div><p>Aucun membre dans l\'équipe pour l\'instant.</p></div>';
+      container.innerHTML = '<div class="empty-state"><div class="icon">👥</div><p>Aucun membre dans l\'équipe pour l\'instant.</p></div>';
       return;
     }
-
     const members = [];
     snap.forEach(d => members.push({ id: d.id, ...d.data() }));
-    // Tri par ordre (si défini) ou par prénom
-    members.sort((a, b) => (a.ordre || 99) - (b.ordre || 99));
+    members.sort((a,b) => (a.ordre||99)-(b.ordre||99));
 
-    grid.innerHTML = '';
-    members.forEach(m => {
-      const el = document.createElement('div');
-      el.className = 'card team-card fade-in';
-      el.innerHTML = `
-        ${m.avatarUrl
-          ? `<img src="${m.avatarUrl}" alt="${m.prenom} ${m.nom}" class="team-avatar"/>`
-          : `<div class="team-avatar-placeholder">${(m.prenom||'?')[0]}${(m.nom||'?')[0]}</div>`
-        }
-        <div class="team-role">${m.role || 'Membre'}</div>
-        <div class="team-name">${m.prenom || ''} ${m.nom || ''}</div>
-        ${m.description ? `<p class="team-desc">${m.description}</p>` : ''}
-      `;
-      grid.appendChild(el);
+    const grouped = { direction: [], staff: [], autres: [] };
+    members.forEach(m => grouped[getPole(m.role)].push(m));
+
+    container.innerHTML = '';
+    POLES.forEach(pole => {
+      const list = grouped[pole.key];
+      if (!list.length) return;
+      const section = document.createElement('div');
+      section.style.cssText = 'margin-bottom:3rem';
+      section.innerHTML = `<div class="pole-heading">${pole.label}</div>`;
+      const grid = document.createElement('div');
+      grid.className = 'grid-4';
+      list.forEach(m => {
+        const el = document.createElement('div');
+        el.className = 'card team-card fade-in';
+        el.innerHTML = `
+          ${m.avatarUrl
+            ? `<img src="${m.avatarUrl}" alt="${m.prenom} ${m.nom}" class="team-avatar"/>`
+            : `<div class="team-avatar-placeholder">${(m.prenom||'?')[0]}${(m.nom||'?')[0]}</div>`}
+          <div class="team-role">${m.role || 'Membre'}</div>
+          <div class="team-name">${m.prenom||''} ${m.nom||''}</div>
+          ${m.description ? `<p class="team-desc">${m.description}</p>` : ''}
+        `;
+        grid.appendChild(el);
+      });
+      section.appendChild(grid);
+      container.appendChild(section);
     });
 
-    // Scroll observer
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: 0.12 });
-    grid.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-  } catch(e) {
-    console.error(e);
-    document.getElementById('team-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">⚠️</div><p>Erreur de chargement.</p></div>';
-  }
+    }, { threshold: 0.1 });
+    container.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  } catch(e) { console.error(e); }
 }
 
-// Discord link
 async function loadDiscord() {
   try {
     const snap = await getDoc(doc(db, 'config', 'site'));
     const url = snap.exists() ? snap.data().discordUrl || '#' : '#';
-    document.getElementById('nav-discord-link').href = url;
-    document.getElementById('footer-discord-link').href = url;
-    document.getElementById('footer-discord-col').href = url;
+    ['nav-discord-link','footer-discord-link','footer-discord-btn'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.href = url;
+    });
   } catch(e) {}
 }
 
-loadTeam();
-loadDiscord();
+loadTeam(); loadDiscord();
 </script>
 </body>
 </html>

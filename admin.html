@@ -200,6 +200,7 @@
       <div class="admin-sidebar-title">Apparence</div>
       <button class="admin-nav-item" data-section="footer-config">📝 Footer</button>
       <button class="admin-nav-item" data-section="recrutement">📋 Recrutement</button>
+      <button class="admin-nav-item" data-section="portfolio">🖼️ Portfolio</button>
     </aside>
 
     <!-- Main content -->
@@ -282,6 +283,37 @@
 
       <!-- FOOTER CONFIG -->
 
+
+      <section class="admin-section" id="section-portfolio">
+        <div class="admin-section-title">🖼️ Gestion du Portfolio</div>
+        <div class="admin-card" style="margin-bottom:1.25rem">
+          <div class="admin-card-title">➕ Ajouter une photo</div>
+          <div class="form-group">
+            <label class="form-label">Image</label>
+            <div class="img-upload-area" id="portfolio-upload-area">
+              <input type="file" id="portfolio-file" accept="image/*"/>
+              <p style="color:var(--text-muted);font-size:0.85rem">Cliquez ou glissez une image ici</p>
+              <img id="portfolio-preview" style="display:none;max-width:200px;max-height:120px;border-radius:6px;margin-top:0.5rem"/>
+            </div>
+            <div style="margin-top:0.5rem">
+              <label class="form-label" style="margin-top:0.75rem">Ou coller une URL d'image</label>
+              <input type="text" id="portfolio-url" class="form-input" placeholder="https://..."/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Légende (optionnel)</label>
+            <input type="text" id="portfolio-caption" class="form-input" placeholder="Description de la photo..."/>
+          </div>
+          <button class="btn btn-primary" id="portfolio-add-btn">➕ Ajouter au portfolio</button>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-title" style="display:flex;align-items:center;justify-content:space-between">
+            <span>📷 Photos du portfolio</span>
+            <span id="portfolio-count" style="font-size:0.8rem;color:var(--text-muted)"></span>
+          </div>
+          <div id="portfolio-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem"></div>
+        </div>
+      </section>
       <section class="admin-section" id="section-recrutement">
         <div class="admin-section-title">📋 Gestion du Recrutement</div>
 
@@ -669,6 +701,7 @@ async function initAdmin() {
   loadFooterConfig();
   loadRecrutementConfig();
   setupRecrutement();
+  setupPortfolio();
 }
 
 // ── DASHBOARD ──
@@ -1166,6 +1199,86 @@ async function loadCandidatures() {
         await deleteDoc(doc(db, 'candidatures', c.id));
         showToast('Candidature supprimée.', 'success');
         loadCandidatures();
+      });
+      list.appendChild(el);
+    });
+  } catch(e) { console.error(e); }
+}
+
+
+// ════════════════════════════════════════
+//  PORTFOLIO
+// ════════════════════════════════════════
+function setupPortfolio() {
+  const fileInput   = document.getElementById('portfolio-file');
+  const preview     = document.getElementById('portfolio-preview');
+  const urlInput    = document.getElementById('portfolio-url');
+  const captionInput= document.getElementById('portfolio-caption');
+  const addBtn      = document.getElementById('portfolio-add-btn');
+
+  fileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      preview.src = ev.target.result;
+      preview.style.display = 'block';
+      urlInput.value = '';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  addBtn.addEventListener('click', async () => {
+    let imageUrl = '';
+    if (fileInput.files[0]) {
+      const reader = new FileReader();
+      imageUrl = await new Promise(res => { reader.onload = e => res(e.target.result); reader.readAsDataURL(fileInput.files[0]); });
+    } else if (urlInput.value.trim()) {
+      imageUrl = urlInput.value.trim();
+    }
+    if (!imageUrl) { showToast('Sélectionne une image.', 'error'); return; }
+
+    try {
+      await addDoc(collection(db, 'portfolio'), {
+        imageUrl,
+        caption: captionInput.value.trim(),
+        createdAt: Date.now(),
+      });
+      fileInput.value = '';
+      preview.style.display = 'none';
+      urlInput.value = '';
+      captionInput.value = '';
+      showToast('Photo ajoutée !', 'success');
+      loadPortfolioAdmin();
+    } catch(e) { showToast('Erreur lors de l'ajout.', 'error'); console.error(e); }
+  });
+
+  loadPortfolioAdmin();
+}
+
+async function loadPortfolioAdmin() {
+  try {
+    const snap = await getDocs(collection(db, 'portfolio'));
+    const list = document.getElementById('portfolio-list');
+    document.getElementById('portfolio-count').textContent = `${snap.size} photo(s)`;
+    if (snap.empty) { list.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">Aucune photo pour le moment.</p>'; return; }
+    const items = [];
+    snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+    items.sort((a,b) => (b.createdAt||0)-(a.createdAt||0));
+    list.innerHTML = '';
+    items.forEach(item => {
+      const el = document.createElement('div');
+      el.style.cssText = 'position:relative;aspect-ratio:16/10;border-radius:6px;overflow:hidden;border:1px solid var(--border)';
+      el.innerHTML = `
+        <img src="${item.imageUrl}" style="width:100%;height:100%;object-fit:cover"/>
+        ${item.caption ? `<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:4px 6px;font-size:0.72rem;color:white">${item.caption}</div>` : ''}
+        <button data-del="${item.id}" style="position:absolute;top:4px;right:4px;background:rgba(192,57,43,0.9);border:none;border-radius:4px;color:white;width:24px;height:24px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center">✕</button>
+      `;
+      el.querySelector('[data-del]').addEventListener('click', async () => {
+        if (!confirm('Supprimer cette photo ?')) return;
+        await deleteDoc(doc(db, 'portfolio', item.id));
+        showToast('Photo supprimée.', 'success');
+        loadPortfolioAdmin();
       });
       list.appendChild(el);
     });
