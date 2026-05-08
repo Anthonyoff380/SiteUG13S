@@ -3,11 +3,10 @@
 //  Logique globale : nav, bulles, footer
 // ================================================
 
-import { db, auth } from './firebase.js';
+import { db } from './firebase.js';
 import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 window.db   = db;
-window.auth = auth;
 
 // ================================================
 //  NAVBAR

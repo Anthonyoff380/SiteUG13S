@@ -526,43 +526,42 @@
 
 <script type="module">
 // ── IMPORTS FIREBASE (via firebase.js) ──
-import { app, db, auth } from './firebase.js';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { app, db } from './firebase.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ── AUTH & CONNEXION AUTO ──
+// ── AUTH — instance unique créée ici ──
+const auth = getAuth(app);
 const loginPage = document.getElementById('login-page');
 const adminPage = document.getElementById('admin-page');
 
-onAuthStateChanged(auth, async user => {
+onAuthStateChanged(auth, user => {
   if (user) {
     loginPage.style.display = 'none';
     adminPage.style.display = 'block';
     document.getElementById('admin-email-display').textContent = user.email;
     initAdmin();
   } else {
-    // TENTATIVE DE CONNEXION AUTO
-    try {
-      // REMPLACE BIEN PAR TES VRAIS IDENTIFIANTS ICI
-      await signInWithEmailAndPassword(auth, 'benjamin17pros@gmail.com', 'ANTHO12345');
-    } catch(e) {
-      loginPage.style.display = 'block';
-      adminPage.style.display = 'none';
-      console.log("Auto-login impossible :", e.message);
-    }
+    loginPage.style.display = 'block';
+    adminPage.style.display = 'none';
   }
 });
 
 document.getElementById('login-btn').addEventListener('click', async () => {
-  const email = document.getElementById('login-email').value;
+  const email = document.getElementById('login-email').value.trim();
   const pass  = document.getElementById('login-password').value;
   const errEl = document.getElementById('login-error');
+  const btn   = document.getElementById('login-btn');
   errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Connexion...';
   try {
     await signInWithEmailAndPassword(auth, email, pass);
   } catch(e) {
-    errEl.textContent = 'Email ou mot de passe incorrect.';
+    errEl.textContent = 'Email ou mot de passe incorrect. (' + e.code + ')';
     errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Se connecter';
   }
 });
 
